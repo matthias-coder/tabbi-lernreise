@@ -1,0 +1,19 @@
+{
+  "name": "Lernreise – Spielerisch lernen",
+  "short_name": "Lernreise",
+  "description": "Gamifizierte Lern-App für Vorschule, Klasse 1 und Klasse 2 (Deutsch & Mathe)",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8fafc",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "./assets/haende/hand_R_5.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -2,10 +2,12 @@
 
 import {
   loadState, saveState, getActiveProfile, setActiveProfile,
-  addProfile, updateProfile, setParentPin
+  addProfile, updateProfile, setParentPin, verifyParentPin,
+  createMathChallenge, exportBackupJson, importBackupJson
 } from './core/storage.js';
 import { speakText, stopSpeech } from './core/audio.js';
-import { applyRoundResult } from './core/progression.js';
+import { applyRoundResult, updateAvatar, placeSticker } from './core/progression.js';
+import { redeemParentGoal, fulfillVoucher, cancelVoucher, copyGoalsToAllProfiles } from './core/rewards.js';
 import '../content/mathe-content.js';
 import '../content/deutsch-content.js';
 
@@ -15,6 +17,9 @@ import { renderHubView } from './views/hub-view.js';
 import { renderJourneyView } from './views/journey-view.js';
 import { createExerciseSession, applyExerciseAction, renderExerciseView } from './views/exercise-view.js';
 import { renderSummaryView } from './views/summary-view.js';
+import { renderAvatarView } from './views/avatar-view.js';
+import { renderAlbumView } from './views/album-view.js';
+import { renderChildGoalsView, renderParentView } from './views/parent-view.js';
 
 class LernreiseApp {
   constructor() {
@@ -23,7 +28,10 @@ class LernreiseApp {
     this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'monster' };
     this.exerciseSession = null;
     this.rewardSummary = null;
-    this.parentSession = { unlocked: false, challenge: null, error: null };
+    this.avatarTab = 'figur';
+    this.albumPageIdx = 0;
+    this.confirmGoalId = null;
+    this.parentSession = { unlocked: false, challenge: null, inputVal: '', error: null };
   }
 
   init() {
@@ -91,6 +99,22 @@ class LernreiseApp {
         }
         break;
 
+      case 'avatar':
+        this.mainMount.innerHTML = renderAvatarView(profile, this.avatarTab);
+        break;
+
+      case 'album':
+        this.mainMount.innerHTML = renderAlbumView(profile, this.albumPageIdx);
+        break;
+
+      case 'goals':
+        this.mainMount.innerHTML = renderChildGoalsView(profile, this.confirmGoalId);
+        break;
+
+      case 'parent':
+        this.mainMount.innerHTML = renderParentView(this.state, this.parentSession);
+        break;
+
       case 'hub':
       default:
         this.mainMount.innerHTML = renderHubView(this.state);
@@ -99,6 +123,27 @@ class LernreiseApp {
   }
 
   bindEvents() {
+    // Delegated Change for parent backup import input
+    document.addEventListener('change', (e) => {
+      const target = e.target.closest('[data-action="import-backup-file"]');
+      if (!target || !target.files || target.files.length === 0) return;
+      const file = target.files[0];
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const text = evt.target.result;
+        const result = importBackupJson(this.state, text, { mode: 'replace' });
+        if (result.ok) {
+          this.state = result.state;
+          this.persist();
+          alert('Backup erfolgreich geladen!');
+          this.render();
+        } else {
+          alert(`Fehler beim Laden: ${result.error || 'Unbekannt'}`);
+        }
+      };
+      reader.readAsText(file);
+    });
+
     document.addEventListener('click', (e) => {
       const target = e.target.closest('[data-action]');
       if (!target) return;
@@ -109,6 +154,7 @@ class LernreiseApp {
 
       switch (action) {
         case 'open-hub':
+          this.confirmGoalId = null;
           this.setRoute('hub');
           break;
 
@@ -298,27 +344,231 @@ class LernreiseApp {
           break;
         }
 
-        case 'open-album':
-          this.setRoute('album');
-          break;
-
+        // --- AVATAR BUILDER ---
         case 'open-avatar':
+          this.avatarTab = 'figur';
           this.setRoute('avatar');
           break;
 
+        case 'switch-avatar-tab':
+          this.avatarTab = val;
+          this.render();
+          break;
+
+        case 'pick-avatar-body':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { bodyType: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'pick-skin-color':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { skinColorId: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'pick-hair-color':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { hairColorId: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'pick-hair-style':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { hairStyleId: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'toggle-avatar-accessory': {
+          const accId = target.getAttribute('data-acc-id');
+          const current = new Set(profile.avatar?.accessoryIds || []);
+          if (current.has(accId)) {
+            current.delete(accId);
+          } else {
+            current.add(accId);
+          }
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { accessoryIds: Array.from(current) }));
+          this.persist();
+          this.render();
+          break;
+        }
+
+        // --- STICKER ALBUM ---
+        case 'open-album':
+          this.albumPageIdx = 0;
+          this.setRoute('album');
+          break;
+
+        case 'switch-album-page':
+          this.albumPageIdx = parseInt(target.getAttribute('data-page-index') || '0', 10);
+          this.render();
+          break;
+
+        case 'place-sticker': {
+          const stickerId = target.getAttribute('data-sticker-id');
+          this.state = updateProfile(this.state, profile.id, (p) => placeSticker(p, stickerId));
+          this.persist();
+          this.render();
+          break;
+        }
+
+        // --- CHILD GOALS & REWARD SHOP ---
         case 'open-goals':
+          this.confirmGoalId = null;
           this.setRoute('goals');
           break;
 
+        case 'ask-redeem-goal':
+          this.confirmGoalId = target.getAttribute('data-goal-id');
+          this.render();
+          break;
+
+        case 'cancel-redeem-goal':
+          this.confirmGoalId = null;
+          this.render();
+          break;
+
+        case 'confirm-redeem-goal': {
+          const goalId = target.getAttribute('data-goal-id');
+          const outcome = redeemParentGoal(profile, goalId);
+          if (outcome.ok) {
+            this.state = updateProfile(this.state, profile.id, () => outcome.profile);
+            this.persist();
+          }
+          this.confirmGoalId = null;
+          this.render();
+          break;
+        }
+
+        // --- PROTECTED PARENT DASHBOARD & GATE ---
         case 'open-parent':
+          if (!this.parentSession.unlocked) {
+            this.parentSession = {
+              unlocked: false,
+              challenge: createMathChallenge(),
+              inputVal: '',
+              error: null
+            };
+          }
           this.setRoute('parent');
           break;
+
+        case 'parent-gate-digit':
+          if (this.parentSession.inputVal.length < 6) {
+            this.parentSession.inputVal += val;
+            this.parentSession.error = null;
+            this.render();
+          }
+          break;
+
+        case 'parent-gate-backspace':
+          this.parentSession.inputVal = this.parentSession.inputVal.slice(0, -1);
+          this.parentSession.error = null;
+          this.render();
+          break;
+
+        case 'parent-gate-submit': {
+          const pinValid = this.state.parentGate?.pin && verifyParentPin(this.state, this.parentSession.inputVal);
+          const mathValid = this.parentSession.challenge && parseInt(this.parentSession.inputVal, 10) === this.parentSession.challenge.answer;
+          if (pinValid || mathValid) {
+            this.parentSession.unlocked = true;
+            this.parentSession.error = null;
+            this.parentSession.inputVal = '';
+          } else {
+            this.parentSession.challenge = createMathChallenge();
+            this.parentSession.inputVal = '';
+            this.parentSession.error = 'Das war nicht richtig. Bitte neue Aufgabe lösen:';
+          }
+          this.render();
+          break;
+        }
+
+        case 'parent-lock-and-exit':
+          this.parentSession = { unlocked: false, challenge: null, inputVal: '', error: null };
+          this.setRoute('hub');
+          break;
+
+        case 'parent-fulfill-voucher': {
+          const voucherId = target.getAttribute('data-voucher-id');
+          this.state = updateProfile(this.state, profile.id, (p) => fulfillVoucher(p, voucherId));
+          this.persist();
+          this.render();
+          break;
+        }
+
+        case 'parent-cancel-voucher': {
+          const voucherId = target.getAttribute('data-voucher-id');
+          const outcome = cancelVoucher(profile, voucherId);
+          if (outcome.ok) {
+            this.state = updateProfile(this.state, profile.id, () => outcome.profile);
+            this.persist();
+          }
+          this.render();
+          break;
+        }
+
+        case 'parent-adjust-cost': {
+          const goalId = target.getAttribute('data-goal-id');
+          const delta = parseInt(target.getAttribute('data-delta') || '0', 10);
+          this.state = updateProfile(this.state, profile.id, (p) => ({
+            ...p,
+            parentGoals: (p.parentGoals || []).map((g) => {
+              if (g.id !== goalId) return g;
+              return { ...g, costCoins: Math.max(5, g.costCoins + delta) };
+            })
+          }));
+          this.persist();
+          this.render();
+          break;
+        }
+
+        case 'parent-toggle-goal': {
+          const goalId = target.getAttribute('data-goal-id');
+          this.state = updateProfile(this.state, profile.id, (p) => ({
+            ...p,
+            parentGoals: (p.parentGoals || []).map((g) => {
+              if (g.id !== goalId) return g;
+              return { ...g, active: g.active === false ? true : false };
+            })
+          }));
+          this.persist();
+          this.render();
+          break;
+        }
+
+        case 'copy-goals-all':
+          this.state = copyGoalsToAllProfiles(this.state, profile.id);
+          this.persist();
+          alert('Belohnungen wurden auf alle Profile übertragen!');
+          this.render();
+          break;
+
+        case 'export-backup': {
+          const { filename, json } = exportBackupJson(this.state);
+          const blob = new Blob([json], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          break;
+        }
       }
     });
   }
 }
 
+// Offline Service Worker Registration
 if (typeof window !== 'undefined') {
+  if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     const app = new LernreiseApp();
     app.init();
