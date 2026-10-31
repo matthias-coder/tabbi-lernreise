@@ -1030,26 +1030,26 @@ test('sw.js CORE_ASSETS lists every existing HTML, CSS, content, core, view, and
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/pwa-and-views.test.js`
 Expected: FAIL with `ERR_MODULE_NOT_FOUND`.
 
-- [ ] **Step 3: Implement `avatar-view.js`, `album-view.js`, `parent-view.js`, `manifest.json`, `sw.js`, `README.md`, and complete `js/app.js` wiring**
+- [x] **Step 3: Implement `avatar-view.js`, `album-view.js`, `parent-view.js`, `manifest.json`, `sw.js`, `README.md`, and complete `js/app.js` wiring**
 
 - `avatar-view.js`: Live `renderAvatarSvg` preview + tabs for *Figur* (`Monster`, `Junge`, `Mädchen`), *Farben* (skin/monster + hair swatches), *Frisuren* (all 5 free), and *Accessoires* (toggle up to 2 unlocked accessories simultaneously, locked slots show `🔒 Überraschungskiste (alle 12 ⭐)`).
 - `album-view.js`: 7 page tabs with placed stickers rendered in full color card frame, newly unlocked unplaced stickers pulsing with *„✨ NEU – Antippen zum Einkleben“*, and locked slots showing `❓` + which stage unlocks them, plus the 12-star Surprise Chest progress bar at the top.
 - `parent-view.js`: Exports both `renderChildGoalsView` (child-safe two-tap goal redemption + list of open voucher tickets waiting for parent checkoff, zero `<input>` tags, on-screen numpad used even for the parent gate unlock!) and `renderParentView` (unlocked parent dashboard with goal CRUD, *„Auf alle Kinder-Profile kopieren“*, open voucher *„Eingelöst ✓“* / *„Stornieren & Taler erstatten“*, optional 4-digit PIN setup, profile grade/audio toggles, JSON backup download & JSON file restore/merge). Automatically re-locks whenever leaving the `parent` route.
 - `manifest.json` + `sw.js` (`CACHE_NAME = 'lernreise-offline-v1'`) + `README.md` documenting local start, architecture, backup format, and workflow for replacing placeholders via `ASSETS_TODO.md`.
 
-- [ ] **Step 4: Run full test suite in `lernreise` and verify `tabbi` git status**
+- [x] **Step 4: Run full test suite in `lernreise` and verify `tabbi` git status**
 
 Run in `c:\Users\matth\OneDrive\Dokumente\lernreise`: `node --test tests/*.test.js`
-Expected: PASS (all 9 test files passing, 0 failures), and `git status` in `c:\Users\matth\OneDrive\Dokumente\tabbi` remains clean.
+Expected: PASS (all 10 test files passing, 0 failures), and `git status` in `c:\Users\matth\OneDrive\Dokumente\tabbi` remains clean.
 
-- [ ] **Step 5: Commit Task 10**
+- [x] **Step 5: Commit Task 10**
 
 ```powershell
 git add js/views/avatar-view.js js/views/album-view.js js/views/parent-view.js js/app.js index.html manifest.json sw.js README.md tests/pwa-and-views.test.js
-git commit -m "feat: add avatar builder, sticker album, parent goals/vouchers, backup UI and offline PWA"
+git commit -m "feat(pwa): complete avatar builder, sticker album, parent dashboard and offline service worker (Task 10)"
 ```
