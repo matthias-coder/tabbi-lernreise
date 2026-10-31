@@ -5,6 +5,7 @@ import {
   addProfile, updateProfile, setParentPin
 } from './core/storage.js';
 import { speakText, stopSpeech } from './core/audio.js';
+import { applyRoundResult } from './core/progression.js';
 import '../content/mathe-content.js';
 import '../content/deutsch-content.js';
 
@@ -12,6 +13,8 @@ import { renderHeaderBar } from './views/header-bar.js';
 import { renderProfileView } from './views/profile-view.js';
 import { renderHubView } from './views/hub-view.js';
 import { renderJourneyView } from './views/journey-view.js';
+import { createExerciseSession, applyExerciseAction, renderExerciseView } from './views/exercise-view.js';
+import { renderSummaryView } from './views/summary-view.js';
 
 class LernreiseApp {
   constructor() {
@@ -19,6 +22,7 @@ class LernreiseApp {
     this.route = { screen: 'hub', params: {} };
     this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'monster' };
     this.exerciseSession = null;
+    this.rewardSummary = null;
     this.parentSession = { unlocked: false, challenge: null, error: null };
   }
 
@@ -40,6 +44,17 @@ class LernreiseApp {
   setRoute(screen, params = {}) {
     stopSpeech();
     this.route = { screen, params };
+
+    if (screen === 'exercise' && params.stageId) {
+      if (!this.exerciseSession || this.exerciseSession.stageId !== params.stageId) {
+        this.exerciseSession = createExerciseSession(params.stageId);
+        const profile = getActiveProfile(this.state);
+        if (profile.audioEnabled && this.exerciseSession.tasks[0]) {
+          speakText(this.exerciseSession.tasks[0].speechText);
+        }
+      }
+    }
+
     this.render();
   }
 
@@ -64,6 +79,18 @@ class LernreiseApp {
         });
         break;
 
+      case 'exercise':
+        if (this.exerciseSession) {
+          this.mainMount.innerHTML = renderExerciseView(this.exerciseSession, profile);
+        }
+        break;
+
+      case 'summary':
+        if (this.exerciseSession && this.rewardSummary) {
+          this.mainMount.innerHTML = renderSummaryView(this.exerciseSession, this.rewardSummary, profile);
+        }
+        break;
+
       case 'hub':
       default:
         this.mainMount.innerHTML = renderHubView(this.state);
@@ -78,6 +105,7 @@ class LernreiseApp {
 
       const action = target.getAttribute('data-action');
       const val = target.getAttribute('data-value');
+      const profile = getActiveProfile(this.state);
 
       switch (action) {
         case 'open-hub':
@@ -146,7 +174,6 @@ class LernreiseApp {
 
         case 'select-subject': {
           const subjectId = target.getAttribute('data-subject-id');
-          const profile = getActiveProfile(this.state);
           this.setRoute('journey', { subjectId, selectedGrade: profile.defaultGrade || 'klasse1' });
           break;
         }
@@ -162,8 +189,109 @@ class LernreiseApp {
           break;
         }
 
+        case 'speak-prompt': {
+          const text = target.getAttribute('data-speech');
+          speakText(text, { enabled: true });
+          break;
+        }
+
+        case 'select-choice': {
+          if (!this.exerciseSession || this.exerciseSession.phase !== 'answering') return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'set-answer', value: val });
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'submit-card' });
+          this.render();
+          break;
+        }
+
+        case 'numpad-digit': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'numpad-digit', value: val });
+          this.render();
+          break;
+        }
+
+        case 'numpad-backspace': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'numpad-backspace' });
+          this.render();
+          break;
+        }
+
+        case 'toggle-tile': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'toggle-tile', value: val });
+          this.render();
+          break;
+        }
+
+        case 'clear-tiles': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'numpad-clear' });
+          this.render();
+          break;
+        }
+
+        case 'submit-card': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'submit-card' });
+          this.render();
+          break;
+        }
+
+        case 'next-card': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'next-card' });
+          if (this.exerciseSession.phase === 'completed') {
+            const outcome = applyRoundResult(profile, {
+              stageId: this.exerciseSession.stageId,
+              correctCount: this.exerciseSession.correctCount
+            });
+            this.state = updateProfile(this.state, profile.id, () => outcome.profile);
+            this.persist();
+            this.rewardSummary = outcome.summary;
+            this.setRoute('summary');
+          } else {
+            if (profile.audioEnabled && this.exerciseSession.tasks[this.exerciseSession.currentIndex]) {
+              speakText(this.exerciseSession.tasks[this.exerciseSession.currentIndex].speechText);
+            }
+            this.render();
+          }
+          break;
+        }
+
+        case 'ask-cancel': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'ask-cancel' });
+          this.render();
+          break;
+        }
+
+        case 'dismiss-cancel': {
+          if (!this.exerciseSession) return;
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'dismiss-cancel' });
+          this.render();
+          break;
+        }
+
+        case 'confirm-cancel': {
+          const subId = this.exerciseSession?.meta?.subject?.id || 'mathe';
+          this.exerciseSession = null;
+          this.setRoute('journey', { subjectId: subId });
+          break;
+        }
+
+        case 'summary-to-journey': {
+          const subId = this.exerciseSession?.meta?.subject?.id || 'mathe';
+          this.setRoute('journey', { subjectId: subId });
+          break;
+        }
+
+        case 'summary-to-hub': {
+          this.setRoute('hub');
+          break;
+        }
+
         case 'toggle-audio': {
-          const profile = getActiveProfile(this.state);
           this.state = updateProfile(this.state, profile.id, (p) => ({ ...p, audioEnabled: !p.audioEnabled }));
           this.persist();
           this.render();
