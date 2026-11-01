@@ -1,6 +1,6 @@
 // Lernreise Offline Service Worker (Network-First for instant development & cache fallback for offline)
 
-const CACHE_NAME = 'lernreise-offline-v9';
+const CACHE_NAME = 'lernreise-offline-v10';
 
 const CORE_ASSETS = [
   './',

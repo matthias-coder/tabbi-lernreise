@@ -74,16 +74,16 @@ export function renderJourneyView(state, options = {}) {
 
       <!-- Quick Altitude Jump Pills -->
       <div class="altitude-jump-bar">
-        <button type="button" class="btn-touch btn-altitude-jump" onclick="document.querySelector('.zone-earth-anchor')?.scrollIntoView({ behavior: 'smooth' })">
+        <button type="button" class="btn-touch btn-altitude-jump" data-action="jump-altitude" data-target="earth">
           🌱 Erde
         </button>
-        <button type="button" class="btn-touch btn-altitude-jump active-jump" onclick="document.querySelector('.active-station-group')?.scrollIntoView({ behavior: 'smooth', block: 'center' })">
+        <button type="button" class="btn-touch btn-altitude-jump active-jump" data-action="jump-altitude" data-target="current">
           📍 Aktuelle Mission
         </button>
-        <button type="button" class="btn-touch btn-altitude-jump" onclick="document.querySelector('.zone-moon-anchor')?.scrollIntoView({ behavior: 'smooth' })">
+        <button type="button" class="btn-touch btn-altitude-jump" data-action="jump-altitude" data-target="moon">
           🌙 Mond
         </button>
-        <button type="button" class="btn-touch btn-altitude-jump" onclick="document.querySelector('.zone-mars-anchor')?.scrollIntoView({ behavior: 'smooth' })">
+        <button type="button" class="btn-touch btn-altitude-jump" data-action="jump-altitude" data-target="mars">
           🔴 Mars
         </button>
       </div>
@@ -227,7 +227,7 @@ export function renderJourneyView(state, options = {}) {
           const starsDisplay = '★'.repeat(item.bestStars) + '☆'.repeat(Math.max(0, 3 - item.bestStars));
 
           return `
-          <g transform="translate(${pos.x}, ${pos.y})" class="map-station-group ${isActive ? 'active-station-group' : ''}" filter="url(#stationDropShadow)">
+          <g transform="translate(${pos.x}, ${pos.y})" class="map-station-group ${isActive ? 'active-station-group' : ''}" data-station-y="${pos.y}" filter="url(#stationDropShadow)">
             ${isActive ? `
               <!-- Pulsierender Schein um die aktive Station -->
               <circle cx="0" cy="0" r="38" fill="none" stroke="#38bdf8" stroke-width="4" opacity="0.8" />

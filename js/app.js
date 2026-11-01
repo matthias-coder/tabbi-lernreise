@@ -82,6 +82,7 @@ class LernreiseApp {
           subjectId: this.route.params.subjectId || 'mathe',
           selectedGrade: this.route.params.selectedGrade || profile.defaultGrade || 'klasse1'
         });
+        this.scrollJourneyMapToActive('auto');
         break;
 
       case 'exercise':
@@ -117,6 +118,34 @@ class LernreiseApp {
         this.mainMount.innerHTML = renderHubView(this.state);
         break;
     }
+  }
+
+  scrollJourneyMapToActive(behavior = 'auto') {
+    requestAnimationFrame(() => {
+      const mapCard = this.mainMount?.querySelector('.space-journey-map-card');
+      if (!mapCard) return;
+      const activeGroup = mapCard.querySelector('.active-station-group');
+      const cardH = mapCard.clientHeight || 500;
+      if (activeGroup) {
+        const targetY = parseFloat(activeGroup.getAttribute('data-station-y'));
+        if (!isNaN(targetY)) {
+          if (targetY >= 2000) {
+            // Earth / bottom zone: keep aligned to bottom so earth banner & launchpad are visible
+            mapCard.scrollTo({ top: mapCard.scrollHeight - cardH, behavior });
+            return;
+          }
+          if (targetY <= 450) {
+            // Mars / top zone
+            mapCard.scrollTo({ top: 0, behavior });
+            return;
+          }
+          // Middle zones: center the active station
+          mapCard.scrollTo({ top: Math.max(0, targetY - cardH / 2), behavior });
+          return;
+        }
+      }
+      mapCard.scrollTo({ top: mapCard.scrollHeight - cardH, behavior });
+    });
   }
 
   bindEvents() {
@@ -227,6 +256,23 @@ class LernreiseApp {
           this.route.params.selectedGrade = target.getAttribute('data-grade-id');
           this.render();
           break;
+
+        case 'jump-altitude': {
+          const targetZone = target.getAttribute('data-target');
+          const mapCard = this.mainMount?.querySelector('.space-journey-map-card');
+          if (!mapCard) break;
+          const cardH = mapCard.clientHeight || 500;
+          if (targetZone === 'earth') {
+            mapCard.scrollTo({ top: mapCard.scrollHeight - cardH, behavior: 'smooth' });
+          } else if (targetZone === 'moon') {
+            mapCard.scrollTo({ top: 560, behavior: 'smooth' });
+          } else if (targetZone === 'mars') {
+            mapCard.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (targetZone === 'current') {
+            this.scrollJourneyMapToActive('smooth');
+          }
+          break;
+        }
 
         case 'open-stage': {
           const stageId = target.getAttribute('data-stage-id');
