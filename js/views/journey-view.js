@@ -13,7 +13,7 @@ export function renderJourneyView(state, options = {}) {
   const topics = getTopicsForSubjectAndGrade(subjectId, selectedGrade);
 
   return `
-  <div class="view-container journey-view" style="--subject-accent: ${currentSubject.accent};">
+  <div class="view-container journey-view journey-view-${subjectId}" style="--subject-accent: ${currentSubject.accent};">
     <div class="journey-header">
       <div class="journey-title-row">
         <button type="button" class="btn-touch btn-nav-back" data-action="open-hub">◀ Fächer</button>

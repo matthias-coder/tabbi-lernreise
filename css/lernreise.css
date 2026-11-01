@@ -425,6 +425,28 @@ body {
 }
 
 /* Journey View */
+.journey-view {
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.journey-view-mathe {
+  background-color: #fdfcf7;
+  background-image:
+    linear-gradient(rgba(253, 252, 247, 0.72), rgba(253, 252, 247, 0.72)),
+    url('../assets/ui/rechenheft-hintergrund.svg');
+}
+
+.journey-view-deutsch {
+  background-color: #fdfcf7;
+  background-image:
+    linear-gradient(rgba(253, 252, 247, 0.72), rgba(253, 252, 247, 0.72)),
+    url('../assets/ui/schulheft-hintergrund.svg');
+}
+
 .journey-header {
   margin-bottom: 24px;
 }
@@ -739,15 +761,26 @@ body {
   color: #fff;
 }
 
-/* Exercise View School Ambiance (Desk Background) */
+/* Exercise View School Ambiance (Bespoke Mathe / Deutsch Notebook Backgrounds) */
 .exercise-view {
-  background-image:
-    linear-gradient(rgba(248, 250, 252, 0.90), rgba(248, 250, 252, 0.90)),
-    url('../assets/ui/schreibtisch-bg.jpg');
   background-size: cover;
-  background-position: center center;
+  background-position: center top;
   background-attachment: fixed;
   min-height: calc(100vh - 80px);
+}
+
+.exercise-view-mathe {
+  background-color: #fdfcf7;
+  background-image:
+    linear-gradient(rgba(253, 252, 247, 0.42), rgba(253, 252, 247, 0.42)),
+    url('../assets/ui/rechenheft-hintergrund.svg');
+}
+
+.exercise-view-deutsch {
+  background-color: #fdfcf7;
+  background-image:
+    linear-gradient(rgba(253, 252, 247, 0.42), rgba(253, 252, 247, 0.42)),
+    url('../assets/ui/schulheft-hintergrund.svg');
 }
 
 .task-card {

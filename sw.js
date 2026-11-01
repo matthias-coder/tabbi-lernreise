@@ -1,6 +1,6 @@
 // Lernreise Offline Service Worker (Network-First for instant development & cache fallback for offline)
 
-const CACHE_NAME = 'lernreise-offline-v5';
+const CACHE_NAME = 'lernreise-offline-v6';
 
 const CORE_ASSETS = [
   './',
@@ -54,6 +54,8 @@ const CORE_ASSETS = [
   'assets/ui/goal-trip.svg',
   'assets/ui/goal-book.svg',
   'assets/ui/goal-play.svg',
+  'assets/ui/schulheft-hintergrund.svg',
+  'assets/ui/rechenheft-hintergrund.svg',
   'assets/ui/schreibtisch-bg.jpg',
   'assets/ui/tintenklecks-art.jpg',
   'assets/ui/rechenheft-stempel.jpg',

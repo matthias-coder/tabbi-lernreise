@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="720" viewBox="0 0 900 720">
+  <defs>
+    <!-- 5mm Rechenheft-Kästchen (Kariertes Papier) -->
+    <pattern id="rechenkaestchen" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#bfdbfe" stroke-width="0.85" opacity="0.65" />
+    </pattern>
+
+    <!-- Weicher Graphit-Bleistift-Effekt & Tinten -->
+    <style>
+      .bleistift {
+        fill: none;
+        stroke: #64748b;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0.26;
+      }
+      .bleistift-fein {
+        fill: none;
+        stroke: #475569;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0.22;
+      }
+      .mathe-blau {
+        fill: #0284c7;
+        opacity: 0.085;
+      }
+      .mathe-blau-kraeftig {
+        fill: #0369a1;
+        opacity: 0.12;
+      }
+      .mathe-rot {
+        fill: #dc2626;
+        opacity: 0.09;
+      }
+    </style>
+  </defs>
+
+  <!-- Warmes Rechenheft-Papier -->
+  <rect width="900" height="720" fill="#fdfcf7" />
+
+  <!-- Kariertes Rechenpapier -->
+  <rect width="900" height="720" fill="url(#rechenkaestchen)" />
+
+  <!-- Klassische rote Randlinie links & rechts (Heftrand) -->
+  <line x1="68" y1="0" x2="68" y2="720" stroke="#fca5a5" stroke-width="2" />
+  <line x1="72" y1="0" x2="72" y2="720" stroke="#fecaca" stroke-width="1" />
+  <line x1="852" y1="0" x2="852" y2="720" stroke="#fca5a5" stroke-width="1.5" stroke-dasharray="8,4" />
+
+  <!-- Heftrand-Lochung (Abheftlöcher links) -->
+  <g fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2">
+    <circle cx="32" cy="140" r="11" />
+    <circle cx="32" cy="360" r="11" />
+    <circle cx="32" cy="580" r="11" />
+  </g>
+
+  <!-- ======================================================================
+       1. ZIRKEL & GEODREIECK / LINEAL (Handgezeichnete Mathe-Werkzeuge)
+       ====================================================================== -->
+
+  <!-- ZIRKEL (Oben rechts mit geschwungenem Zirkelbogen) -->
+  <g transform="translate(730, 40) rotate(16)">
+    <!-- Gezogener zarter Bleistift-Kreisbogen -->
+    <path class="bleistift-fein" stroke-width="1.5" stroke-dasharray="4,3"
+      d="M -120 180 A 130 130 0 0 1 40 185" />
+
+    <!-- Zirkel-Kopf (Drehgriff & Gelenk) -->
+    <g class="bleistift" stroke-width="2.2">
+      <!-- Rändelgriff oben -->
+      <rect x="-3" y="-28" width="6" height="16" rx="1.5" />
+      <line x1="-3" y1="-22" x2="3" y2="-22" stroke-width="1" />
+      <line x1="-3" y1="-16" x2="3" y2="-16" stroke-width="1" />
+      <!-- Gelenkkopf -->
+      <circle cx="0" cy="-6" r="8" />
+      <circle cx="0" cy="-6" r="3" />
+
+      <!-- Linkes Bein (mit Nadel) -->
+      <path d="M -4 -2 L -22 110 L -24 135 L -22 145" />
+      <polygon points="-24,135 -20,135 -22,148" fill="#64748b" opacity="0.35" />
+
+      <!-- Rechtes Bein (mit Bleistifthalter & Mine) -->
+      <path d="M 4 -2 L 24 105" />
+      <!-- Klemme / Feststellrad -->
+      <rect x="20" y="85" width="10" height="12" rx="2" />
+      <circle cx="25" cy="91" r="2" />
+      <!-- Bleistift / Mine -->
+      <path d="M 23 105 L 29 130 L 25 142 L 21 130 Z" />
+      <polygon points="23,136 27,136 25,143" fill="#64748b" opacity="0.4" />
+
+      <!-- Zirkelbogen / Skala-Führung -->
+      <path d="M -14 55 Q 0 65 14 55" stroke-width="1.5" />
+    </g>
+  </g>
+
+  <!-- GEODREIECK (Unten links, handgezeichnetes 45°-90°-45° Geodreieck) -->
+  <g class="bleistift" stroke-width="2" transform="translate(100, 520) rotate(-12)">
+    <!-- Äußeres Dreieck -->
+    <polygon points="0,110 110,0 220,110" />
+    <!-- Innerer Ausschnitt -->
+    <polygon points="35,96 110,24 185,96" stroke-width="1.4" />
+
+    <!-- Millimeter- und Zentimeter-Skala an der Grundlinie -->
+    <!-- Nullpunkt in der Mitte -->
+    <line x1="110" y1="110" x2="110" y2="92" stroke-width="2" />
+    <!-- Zentimeter-Striche links & rechts -->
+    <line x1="88" y1="110" x2="88" y2="98" stroke-width="1.6" />
+    <line x1="66" y1="110" x2="66" y2="98" stroke-width="1.6" />
+    <line x1="44" y1="110" x2="44" y2="98" stroke-width="1.6" />
+    <line x1="22" y1="110" x2="22" y2="98" stroke-width="1.6" />
+    <line x1="132" y1="110" x2="132" y2="98" stroke-width="1.6" />
+    <line x1="154" y1="110" x2="154" y2="98" stroke-width="1.6" />
+    <line x1="176" y1="110" x2="176" y2="98" stroke-width="1.6" />
+    <line x1="198" y1="110" x2="198" y2="98" stroke-width="1.6" />
+    <!-- Feine 5mm Striche -->
+    <line x1="99" y1="110" x2="99" y2="102" stroke-width="1" />
+    <line x1="77" y1="110" x2="77" y2="102" stroke-width="1" />
+    <line x1="55" y1="110" x2="55" y2="102" stroke-width="1" />
+    <line x1="121" y1="110" x2="121" y2="102" stroke-width="1" />
+    <line x1="143" y1="110" x2="143" y2="102" stroke-width="1" />
+    <line x1="165" y1="110" x2="165" y2="102" stroke-width="1" />
+
+    <!-- Grad-Bogen im Dreieck (zarter Halbkreis) -->
+    <path d="M 68 85 A 48 48 0 0 1 152 85" stroke-width="1.2" stroke-dasharray="3,3" />
+    <line x1="110" y1="62" x2="110" y2="40" stroke-width="1.2" />
+  </g>
+
+  <!-- ======================================================================
+       2. RECHEN-DOODLES (Zahlenhaus, Rechendreieck, Würfel, Gleichungen)
+       ====================================================================== -->
+
+  <!-- Mini-Zahlenhaus oben links am Rand -->
+  <g class="bleistift" stroke-width="2" transform="translate(18, 38) rotate(4)">
+    <!-- Dach mit Zielzahl 10 -->
+    <polygon points="24,2 46,18 2,18" />
+    <text x="24" y="15" font-family="'Andika', system-ui, sans-serif" font-size="11" font-weight="900" fill="#475569" opacity="0.3" text-anchor="middle">10</text>
+    <!-- Etagen -->
+    <rect x="4" y="18" width="40" height="38" rx="2" />
+    <line x1="24" y1="18" x2="24" y2="56" />
+    <line x1="4" y1="37" x2="44" y2="37" />
+    <!-- Zahlen 4|6 und 3|7 -->
+    <text x="14" y="32" font-family="'Andika', system-ui, sans-serif" font-size="10" font-weight="bold" fill="#475569" opacity="0.28" text-anchor="middle">4</text>
+    <text x="34" y="32" font-family="'Andika', system-ui, sans-serif" font-size="10" font-weight="bold" fill="#475569" opacity="0.28" text-anchor="middle">6</text>
+    <text x="14" y="51" font-family="'Andika', system-ui, sans-serif" font-size="10" font-weight="bold" fill="#475569" opacity="0.28" text-anchor="middle">3</text>
+    <text x="34" y="51" font-family="'Andika', system-ui, sans-serif" font-size="10" font-weight="bold" fill="#475569" opacity="0.28" text-anchor="middle">7</text>
+  </g>
+
+  <!-- Rechendreieck-Kritzelei oben Mitte -->
+  <g class="bleistift" stroke-width="1.8" transform="translate(240, 24) rotate(-3)">
+    <!-- Dreieck -->
+    <polygon points="36,4 70,54 2,54" />
+    <!-- Eckkreise -->
+    <circle cx="36" cy="4" r="7" fill="#fdfcf7" />
+    <circle cx="70" cy="54" r="7" fill="#fdfcf7" />
+    <circle cx="2" cy="54" r="7" fill="#fdfcf7" />
+    <!-- Eckzahlen: 3, 5, 2 -->
+    <text x="36" y="8" font-family="'Andika', system-ui, sans-serif" font-size="9" font-weight="900" fill="#475569" opacity="0.3" text-anchor="middle">3</text>
+    <text x="70" y="58" font-family="'Andika', system-ui, sans-serif" font-size="9" font-weight="900" fill="#475569" opacity="0.3" text-anchor="middle">5</text>
+    <text x="2" y="58" font-family="'Andika', system-ui, sans-serif" font-size="9" font-weight="900" fill="#475569" opacity="0.3" text-anchor="middle">2</text>
+    <!-- Außenzahl 8 -->
+    <text x="56" y="32" font-family="'Andika', system-ui, sans-serif" font-size="9" font-weight="bold" fill="#475569" opacity="0.28" text-anchor="middle">8</text>
+  </g>
+
+  <!-- Handgezeichneter Spielwürfel (rechts Mitte) -->
+  <g class="bleistift" stroke-width="2" transform="translate(856, 310) rotate(12)">
+    <!-- Würfelkorpus -->
+    <rect x="0" y="0" width="34" height="34" rx="6" fill="#fdfcf7" />
+    <!-- 5 Augen -->
+    <circle cx="8" cy="8" r="2.5" fill="#475569" opacity="0.3" />
+    <circle cx="26" cy="8" r="2.5" fill="#475569" opacity="0.3" />
+    <circle cx="17" cy="17" r="2.5" fill="#475569" opacity="0.3" />
+    <circle cx="8" cy="26" r="2.5" fill="#475569" opacity="0.3" />
+    <circle cx="26" cy="26" r="2.5" fill="#475569" opacity="0.3" />
+  </g>
+
+  <!-- Gezeichneter Radiergummi mit Radierkrümeln (rechts unten) -->
+  <g class="bleistift" stroke-width="2" transform="translate(800, 610) rotate(-15)">
+    <!-- Radiergummikörper (schräg zweifarbig geteilt) -->
+    <path d="M 0 10 L 36 0 L 52 26 L 16 36 Z" fill="#fdfcf7" />
+    <line x1="20" y1="4" x2="36" y2="30" stroke-width="1.5" />
+    <!-- Schraffur auf blauer Seite -->
+    <path class="mathe-blau" d="M 20 4 L 36 0 L 52 26 L 36 30 Z" />
+    <!-- Radierkrümel -->
+    <circle cx="-6" cy="16" r="1.5" fill="#64748b" opacity="0.3" />
+    <circle cx="-12" cy="24" r="1.8" fill="#64748b" opacity="0.3" />
+    <circle cx="-4" cy="32" r="1.2" fill="#64748b" opacity="0.3" />
+    <!-- Wegradiertes Kritzelfeld -->
+    <path class="bleistift-fein" stroke-width="1.2" stroke-dasharray="2,3" d="M -35 18 Q -20 12 -5 22" />
+  </g>
+
+  <!-- Kinder-Rechenkritzeleien am linken & rechten Rand -->
+  <g class="bleistift-fein" stroke-width="1.8" transform="translate(12, 280) rotate(-5)">
+    <!-- "3 + 4 = 7" -->
+    <text x="0" y="16" font-family="'Andika', system-ui, sans-serif" font-size="13" font-weight="bold" fill="#475569" opacity="0.25">3 + 4 = 7</text>
+    <!-- Kleines Pluszeichen & Zehnerpunkt -->
+    <path d="M 12 28 L 12 40 M 6 34 L 18 34" stroke="#475569" stroke-width="2" opacity="0.25" />
+    <circle cx="34" cy="34" r="4" fill="#0284c7" opacity="0.15" />
+  </g>
+
+  <g class="bleistift-fein" stroke-width="1.8" transform="translate(14, 440) rotate(3)">
+    <!-- "10 - 2 = 8" -->
+    <text x="0" y="16" font-family="'Andika', system-ui, sans-serif" font-size="13" font-weight="bold" fill="#475569" opacity="0.25">10 - 2 = 8</text>
+    <!-- Kleiner Größer-Als-Vergleich: 5 > 2 -->
+    <text x="2" y="38" font-family="'Andika', system-ui, sans-serif" font-size="12" font-weight="bold" fill="#475569" opacity="0.25">5 &gt; 2</text>
+  </g>
+
+  <!-- Zarte Rechenheft-Eckstempel / Blaue Farbtupfen am Rand -->
+  <g transform="translate(840, 115)">
+    <circle class="mathe-blau-kraeftig" cx="12" cy="12" r="4" />
+    <circle class="mathe-blau" cx="22" cy="18" r="2.5" />
+    <circle class="mathe-blau" cx="6" cy="24" r="2" />
+  </g>
+
+  <!-- Zarte Mathe-Geometrie-Formen (Quadrat, Dreieck, Kreis) unten am Rand -->
+  <g class="bleistift" stroke-width="1.8" transform="translate(480, 680)">
+    <rect x="0" y="0" width="18" height="18" rx="2" />
+    <polygon points="38,0 48,18 28,18" />
+    <circle cx="68" cy="9" r="9" />
+  </g>
+</svg>
