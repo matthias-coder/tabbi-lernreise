@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" aria-label="Tintenspritzer Ecke">
+  <defs>
+    <radialGradient id="inkCornerGlow" cx="65%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#1d4ed8" />
+      <stop offset="90%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#172554" />
+    </radialGradient>
+  </defs>
+
+  <!-- Corner splash shape -->
+  <path d="M 98,12 
+           C 108,18 114,32 108,44 
+           C 102,56 106,68 96,78 
+           C 84,90 70,88 62,98 
+           C 54,108 42,106 32,96 
+           C 24,86 28,74 24,64 
+           C 20,54 8,46 14,36 
+           C 22,24 38,32 50,22 
+           C 62,12 86,6 98,12 
+           Z" 
+        fill="url(#inkCornerGlow)" 
+        opacity="0.9" />
+
+  <!-- Splashes -->
+  <path d="M 96,78 Q 112,88 118,102 Q 104,96 92,86 Z" fill="url(#inkCornerGlow)" opacity="0.9" />
+  <path d="M 32,96 Q 22,112 12,118 Q 22,104 28,92 Z" fill="url(#inkCornerGlow)" opacity="0.9" />
+
+  <!-- Droplets -->
+  <circle cx="106" cy="112" r="3.5" fill="#1d4ed8" />
+  <circle cx="116" cy="74" r="2.5" fill="#1e3a8a" />
+  <circle cx="8" cy="110" r="3" fill="#1d4ed8" />
+  <circle cx="16" cy="18" r="3.5" fill="#1e3a8a" />
+  <circle cx="4" cy="28" r="2" fill="#1d4ed8" />
+  <circle cx="70" cy="4" r="3" fill="#1d4ed8" />
+
+  <ellipse cx="68" cy="38" rx="10" ry="5" transform="rotate(-15 68 38)" fill="#93c5fd" opacity="0.4" />
+</svg>

@@ -615,16 +615,161 @@ body {
   color: #fff;
 }
 
+/* Exercise View School Ambiance (Desk Background) */
+.exercise-view {
+  background-image:
+    linear-gradient(rgba(248, 250, 252, 0.90), rgba(248, 250, 252, 0.90)),
+    url('../assets/ui/schreibtisch-bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  min-height: calc(100vh - 80px);
+}
+
 .task-card {
+  position: relative;
   background: var(--surface-card);
   border-radius: var(--radius-lg);
   border: 2px solid var(--border-color);
-  padding: 24px 24px 36px 24px;
+  padding: 30px 24px 38px 34px;
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: 20px;
   margin-bottom: 40px;
+  overflow: hidden;
+}
+
+/* 1. Mathe Worksheet Card (Rechenheft-Kästchen 5mm / 24px + Roter Heftrand) */
+.task-card-mathe {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(219, 234, 254, 0.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(219, 234, 254, 0.55) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-left: 8px solid #f87171; /* Roter Korrektur-/Heftrand */
+  box-shadow: 0 14px 34px -5px rgba(2, 132, 199, 0.08), 0 6px 12px -2px rgba(15, 23, 42, 0.04);
+}
+
+.task-card-mathe::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px;
+  width: 2px;
+  background: rgba(248, 113, 113, 0.35);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 2. Deutsch Worksheet Card (Schreibheft-Lineatur 1. Klasse + Tintenflecken) */
+.task-card-deutsch {
+  background-color: #fffefb;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 11px,
+      rgba(199, 210, 254, 0.35) 12px,
+      transparent 13px,
+      transparent 23px,
+      rgba(129, 140, 248, 0.40) 24px,
+      transparent 25px,
+      transparent 35px,
+      rgba(99, 102, 241, 0.55) 36px,
+      transparent 37px,
+      transparent 47px,
+      rgba(199, 210, 254, 0.35) 48px
+    );
+  background-size: 100% 48px;
+  border-left: 8px solid #f87171; /* Roter Heftrand */
+  box-shadow: 0 14px 34px -5px rgba(99, 102, 241, 0.08), 0 6px 12px -2px rgba(15, 23, 42, 0.04);
+}
+
+.task-card-deutsch::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px;
+  width: 2px;
+  background: rgba(248, 113, 113, 0.35);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Binder Holes (Heftrand-Lochung) */
+.sheet-paper-margin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.binder-hole {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Sheet Header Stamp */
+.sheet-header-stamp {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.88;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.04));
+}
+
+.sheet-stamp-img {
+  width: 110px;
+  height: auto;
+  display: block;
+}
+
+/* Tintenflecken Decorations (authentic royal blue fountain pen ink) */
+.tintenfleck-wrap {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.12));
+}
+
+.tintenfleck-corner {
+  top: -6px;
+  right: 120px;
+  width: 68px;
+  height: 68px;
+  opacity: 0.85;
+  transform: rotate(12deg);
+}
+
+.tintenfleck-bottom {
+  bottom: 8px;
+  left: 24px;
+  width: 78px;
+  height: 78px;
+  opacity: 0.70;
+  transform: rotate(-15deg);
+}
+
+.tintenfleck-img {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .task-card.card-feedback-correct {
@@ -636,9 +781,27 @@ body {
 }
 
 .task-prompt-row {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+}
+
+.task-visual-box {
+  position: relative;
+  z-index: 3;
+}
+
+.task-interaction-zone {
+  position: relative;
+  z-index: 3;
 }
 
 .btn-speak-prompt {

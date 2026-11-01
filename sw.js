@@ -1,6 +1,6 @@
 // Lernreise Offline Service Worker (Network-First for instant development & cache fallback for offline)
 
-const CACHE_NAME = 'lernreise-offline-v3';
+const CACHE_NAME = 'lernreise-offline-v4';
 
 const CORE_ASSETS = [
   './',
@@ -39,7 +39,15 @@ const CORE_ASSETS = [
   'assets/haende/hand_R_2.svg',
   'assets/haende/hand_R_3.svg',
   'assets/haende/hand_R_4.svg',
-  'assets/haende/hand_R_5.svg'
+  'assets/haende/hand_R_5.svg',
+  'assets/ui/rechenheft-stamp.svg',
+  'assets/ui/schreibheft-stamp.svg',
+  'assets/ui/tintenfleck.svg',
+  'assets/ui/tintenfleck-corner.svg',
+  'assets/ui/schreibtisch-bg.jpg',
+  'assets/ui/tintenklecks-art.jpg',
+  'assets/ui/rechenheft-stempel.jpg',
+  'assets/ui/fibel-stempel.jpg'
 ];
 
 self.addEventListener('install', (event) => {

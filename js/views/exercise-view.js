@@ -195,8 +195,12 @@ export function renderExerciseView(session, profile) {
   const isFeedback = session.phase === 'feedback';
   const lastResult = isFeedback ? session.results[session.results.length - 1] : null;
 
+  const subjectId = session.meta?.subject?.id || (session.stageId?.startsWith('deutsch') ? 'deutsch' : 'mathe');
+  const isMathe = subjectId === 'mathe';
+  const isDeutsch = subjectId === 'deutsch';
+
   return `
-  <div class="view-container exercise-view">
+  <div class="view-container exercise-view exercise-view-${subjectId}">
     <div class="exercise-top-bar">
       ${session.confirmCancel ? `
         <div class="cancel-confirm-box">
@@ -218,7 +222,28 @@ export function renderExerciseView(session, profile) {
       </div>
     </div>
 
-    <div class="task-card ${isFeedback ? (lastResult.isCorrect ? 'card-feedback-correct' : 'card-feedback-wrong') : ''}">
+    <div class="task-card task-card-${subjectId} ${isFeedback ? (lastResult.isCorrect ? 'card-feedback-correct' : 'card-feedback-wrong') : ''}">
+      <!-- Sheet Paper Margin & Lochung -->
+      <div class="sheet-paper-margin" aria-hidden="true">
+        <div class="binder-hole hole-top"></div>
+        <div class="binder-hole hole-bottom"></div>
+      </div>
+
+      <!-- Sheet Paper Header Stamp -->
+      <div class="sheet-header-stamp" aria-hidden="true">
+        <img src="assets/ui/${isMathe ? 'rechenheft-stamp.svg' : 'schreibheft-stamp.svg'}" alt="" class="sheet-stamp-img" />
+      </div>
+
+      ${isDeutsch ? `
+        <!-- Ink Blotches for German Worksheet (Tintenflecken) -->
+        <div class="tintenfleck-wrap tintenfleck-corner" aria-hidden="true">
+          <img src="assets/ui/tintenfleck-corner.svg" alt="" class="tintenfleck-img" />
+        </div>
+        <div class="tintenfleck-wrap tintenfleck-bottom" aria-hidden="true">
+          <img src="assets/ui/tintenfleck.svg" alt="" class="tintenfleck-img" />
+        </div>
+      ` : ''}
+
       <div class="task-prompt-row">
         <button type="button" class="btn-touch btn-speak-prompt" data-action="speak-prompt" data-speech="${escapeHtml(currentTask.speechText)}" title="Aufgabe vorlesen">
           🔊

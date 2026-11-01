@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" aria-label="Füller-Tintenfleck">
+  <defs>
+    <radialGradient id="inkGlow" cx="42%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="45%" stop-color="#1d4ed8" />
+      <stop offset="85%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#172554" />
+    </radialGradient>
+    <filter id="inkWet" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#0f172a" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Central organic ink blotch -->
+  <path d="M 78,32 
+           C 92,26 104,36 108,48 
+           C 114,58 126,60 128,72 
+           C 131,86 119,98 114,108 
+           C 107,120 96,128 82,126 
+           C 68,124 58,134 46,126 
+           C 34,118 36,102 32,90 
+           C 28,78 20,68 26,54 
+           C 32,40 48,46 60,38 
+           Z" 
+        fill="url(#inkGlow)" 
+        filter="url(#inkWet)" />
+
+  <!-- Splash tendrils -->
+  <path d="M 108,48 Q 124,40 134,32 Q 126,46 116,56 Z" fill="url(#inkGlow)" />
+  <path d="M 32,90 Q 18,98 8,106 Q 22,106 36,98 Z" fill="url(#inkGlow)" />
+  <path d="M 82,126 Q 88,142 96,152 Q 90,138 84,128 Z" fill="url(#inkGlow)" />
+  <path d="M 26,54 Q 14,44 6,34 Q 20,44 30,52 Z" fill="url(#inkGlow)" />
+  <path d="M 128,72 Q 144,76 154,74 Q 142,82 124,80 Z" fill="url(#inkGlow)" />
+
+  <!-- Satellite ink droplets -->
+  <circle cx="142" cy="26" r="4.5" fill="#1d4ed8" />
+  <circle cx="152" cy="40" r="2.5" fill="#1e3a8a" />
+  <circle cx="148" cy="94" r="3.5" fill="#1d4ed8" />
+  <circle cx="106" cy="148" r="4" fill="#1e3a8a" />
+  <circle cx="118" cy="156" r="2" fill="#1d4ed8" />
+  <circle cx="28" cy="138" r="3.5" fill="#1d4ed8" />
+  <circle cx="14" cy="122" r="2" fill="#1e3a8a" />
+  <circle cx="10" cy="72" r="3" fill="#1d4ed8" />
+  <circle cx="4" cy="48" r="2.5" fill="#1e3a8a" />
+  <circle cx="48" cy="20" r="3.5" fill="#1d4ed8" />
+  <circle cx="62" cy="12" r="2" fill="#1e3a8a" />
+
+  <!-- Wet ink glossy highlights -->
+  <ellipse cx="64" cy="54" rx="14" ry="8" transform="rotate(-25 64 54)" fill="#60a5fa" opacity="0.45" />
+  <ellipse cx="94" cy="78" rx="8" ry="5" transform="rotate(30 94 78)" fill="#93c5fd" opacity="0.35" />
+</svg>
