@@ -1,5 +1,25 @@
 # 🚀 Lernreise – Spielerisch lernen (Vorschule, Klasse 1 & 2)
 
+> 🌐 **Live Web-App:** [**https://matthias-coder.github.io/tabbi-lernreise/**](https://matthias-coder.github.io/tabbi-lernreise/)  
+> 📱 **PWA-fähig:** Direkt im Browser auf Tablet, iPad oder Smartphone starten oder zum Homescreen hinzufügen.
+
+<div align="center">
+
+[![Live Demo auf GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-0284c7?style=for-the-badge&logo=github&logoColor=white)](https://matthias-coder.github.io/tabbi-lernreise/)
+
+### 📲 QR-Code zum Scannen (Tablet / Smartphone):
+*Halte die Kamera deines Tablets oder Handys auf diesen QR-Code, um die Lernreise direkt zu öffnen:*
+
+<a href="https://matthias-coder.github.io/tabbi-lernreise/">
+  <img src="docs/qr-code.png" width="200" height="200" alt="QR-Code zu Lernreise auf GitHub Pages" />
+</a>
+
+👉 [**matthias-coder.github.io/tabbi-lernreise**](https://matthias-coder.github.io/tabbi-lernreise/)
+
+</div>
+
+---
+
 Lernreise ist eine moderne, kindgerechte und offline-fähige Web-App (PWA) für Kinder der **Vorschule, Klasse 1 und Klasse 2** für die Fächer **Mathe** und **Deutsch**.
 
 ---
