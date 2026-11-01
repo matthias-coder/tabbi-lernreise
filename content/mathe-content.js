@@ -118,8 +118,9 @@ export function generateMatheStageRound(stageId, options = {}) {
       tasks.push({
         id: `${stageId}_${i}`,
         type: 'choice-cards',
-        promptText: `Wie viele Punkte siehst du?`,
+        promptText: `Wie viele Würfelpunkte siehst du?`,
         speechText: `Wie viele Punkte siehst du auf dem Würfel?`,
+        visual: { type: 'dice', count: num },
         correctAnswer: num,
         payload: {
           choices: makeChoices(num, [1, 2, 3, 4])
@@ -132,6 +133,7 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'choice-cards',
         promptText: `Wie viele Würfelpunkte sind das?`,
         speechText: `Wie viele Würfelpunkte sind das?`,
+        visual: { type: 'dice', count: num },
         correctAnswer: num,
         payload: {
           choices: makeChoices(num, [1, 2, 3, 4, 5, 6])
@@ -143,7 +145,8 @@ export function generateMatheStageRound(stageId, options = {}) {
         id: `${stageId}_${i}`,
         type: 'choice-cards',
         promptText: `Zähle die Punkte: Wie viele sind es?`,
-        speechText: `Zähle die Punkte im Kreis. Wie viele sind es?`,
+        speechText: `Zähle die Punkte. Wie viele sind es?`,
+        visual: { type: 'dots', count: num, color: '#0284c7' },
         correctAnswer: num,
         payload: {
           choices: makeChoices(num, [num - 1 || 6, num + 1 <= 6 ? num + 1 : 1, 4, 5])
@@ -170,7 +173,7 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'choice-cards',
         promptText: `Wie viele Finger an beiden Händen?`,
         speechText: `Wie viele Finger siehst du an beiden Händen zusammen?`,
-        visual: { assetId: `hand-r-${rightHandCount}` },
+        visual: { type: 'two-hands', right: rightHandCount },
         correctAnswer: num,
         payload: {
           choices: makeChoices(num, [num - 1 || 5, num + 1 <= 10 ? num + 1 : 6, 7, 10])
@@ -178,11 +181,14 @@ export function generateMatheStageRound(stageId, options = {}) {
       });
     } else if (stageId === 'mathe-vs-t2-s3') {
       const count = 3 + (i % 8); // 3..10
+      const emojis = ['🍎', '⭐', '🎈', '🐞', '🐥', '🐟', '🍓', '🥕'];
+      const emoji = emojis[i % emojis.length];
       tasks.push({
         id: `${stageId}_${i}`,
         type: 'choice-cards',
-        promptText: `Zähle die Tiere: Wie viele sind es?`,
-        speechText: `Zähle die Tiere auf der Wiese. Wie viele sind es?`,
+        promptText: `Zähle die Objekte: Wie viele sind es?`,
+        speechText: `Zähle die Objekte. Wie viele sind es?`,
+        visual: { type: 'meadow', count, emoji },
         correctAnswer: count,
         payload: {
           choices: makeChoices(count, [count - 1, count + 1, count + 2, 8])
@@ -196,25 +202,31 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'choice-cards',
         promptText: `Wo sind MEHR Punkte?`,
         speechText: `Tippe auf das Feld mit MEHR Punkten.`,
+        visual: { type: 'compare-groups', leftCount: left, rightCount: right, icon: '⭐' },
         correctAnswer: right,
         payload: {
           choices: [
-            { value: left, label: `${left} Punkte` },
-            { value: right, label: `${right} Punkte` }
+            { value: left, label: `${left} Sterne (A)` },
+            { value: right, label: `${right} Sterne (B)` }
           ]
         }
       });
     } else if (stageId === 'mathe-vs-t3-s2') {
-      const seq = [1, 2, 1, 2, 1];
-      const next = 2;
+      const patternItems = ['⭐', '🔵', '⭐', '🔵', '⭐'];
+      const next = '🔵';
       tasks.push({
         id: `${stageId}_${i}`,
         type: 'choice-cards',
-        promptText: `Was kommt als Nächstes? (1, 2, 1, 2, 1, …)`,
-        speechText: `Welche Zahl setzt die Reihe fort? 1, 2, 1, 2, 1...`,
+        promptText: `Was kommt als Nächstes im Muster?`,
+        speechText: `Welches Symbol setzt das Muster fort?`,
+        visual: { type: 'pattern', sequence: patternItems, missingIndex: -1 },
         correctAnswer: next,
         payload: {
-          choices: makeChoices(next, [1, 2, 3, 4])
+          choices: [
+            { value: '🔵', label: '🔵 Kreis' },
+            { value: '⭐', label: '⭐ Stern' },
+            { value: '🟩', label: '🟩 Quadrat' }
+          ]
         }
       });
     } else if (stageId === 'mathe-vs-t3-s3') {
@@ -313,8 +325,13 @@ export function generateMatheStageRound(stageId, options = {}) {
       tasks.push({
         id: `${stageId}_${i}`,
         type: 'numpad-gap',
-        promptText: `Zwerg: ${a}+${b}=${a + b} → Riese: ${bigA} + ${b} = ?`,
+        promptText: `Zwerg: ${a} + ${b} = ${a + b} → Riese: ${bigA} + ${b} = ?`,
         speechText: `Kleine Zwergenaufgabe hilft der Riesenaufgabe: Wie viel ist ${bigA} plus ${b}?`,
+        visual: {
+          type: 'zwerg-riese',
+          zwerg: `${a} + ${b} = ${a + b}`,
+          riese: `${bigA} + ${b} = ?`
+        },
         correctAnswer: bigA + b,
         payload: { maxDigits: 2 }
       });
@@ -380,6 +397,7 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'numpad-gap',
         promptText: `${z} Zehner und ${e} Einer = ?`,
         speechText: `Wie viel sind ${z} Zehner und ${e} Einer zusammen?`,
+        visual: { type: 'dienes', tens: z, ones: e },
         correctAnswer: num,
         payload: { maxDigits: 3 }
       });
@@ -391,6 +409,13 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'numpad-gap',
         promptText: `Nächster Zehner nach ${n} = ?`,
         speechText: `Welcher glatte Zehner folgt auf die Zahl ${n}?`,
+        visual: {
+          type: 'number-line',
+          current: n,
+          target: nextTen,
+          min: Math.floor(n / 10) * 10,
+          max: nextTen + 5
+        },
         correctAnswer: nextTen,
         payload: { maxDigits: 3 }
       });
@@ -447,6 +472,7 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'numpad-gap',
         promptText: `${factor} × ${table} = ?`,
         speechText: `Wie viel ist ${factor} mal ${table}?`,
+        visual: { type: 'dot-array', rows: factor, cols: table },
         correctAnswer: factor * table,
         payload: { maxDigits: 3 }
       });
@@ -457,6 +483,7 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'numpad-gap',
         promptText: `Quadrataufgabe: ${num} × ${num} = ?`,
         speechText: `Quadratzahl: Wie viel ist ${num} mal ${num}?`,
+        visual: { type: 'dot-array', rows: num, cols: num },
         correctAnswer: num * num,
         payload: { maxDigits: 3 }
       });
@@ -468,6 +495,7 @@ export function generateMatheStageRound(stageId, options = {}) {
         type: 'choice-cards',
         promptText: `${a} × ${b} = ?`,
         speechText: `Wie viel ist ${a} mal ${b}?`,
+        visual: { type: 'dot-array', rows: a, cols: b },
         correctAnswer: a * b,
         payload: {
           choices: makeChoices(a * b, [a * b - 2, a * b + 4, a * (b - 1) || 12, (a + 1) * b])

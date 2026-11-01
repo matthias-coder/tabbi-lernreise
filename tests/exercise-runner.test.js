@@ -67,6 +67,11 @@ test('zahlenhaus, zahlenmauer, zehnerstreifen, and nachbarzahlen render authenti
   assert.ok(hausHtml.includes('zahlenhaus-toy') && hausHtml.includes('dach-badge-window') && hausHtml.includes('haus-body'));
   assert.ok(hausHtml.includes('numpad-submit-btn') && !hausHtml.toLowerCase().includes('<input'));
 
+  // Typing "0" must activate the OK button (btn-ready)
+  const sHausTyped0 = applyExerciseAction(sHaus, { type: 'numpad-digit', value: '0' });
+  const haus0Html = renderExerciseView(sHausTyped0, profile);
+  assert.ok(haus0Html.includes('btn-ready'), 'typing 0 must activate OK button');
+
   // 2. Zahlenmauer (mathe-kl1-t3-s3)
   const sMauer = createExerciseSession('mathe-kl1-t3-s3');
   assert.equal(sMauer.tasks[0].type, 'zahlenmauer');
@@ -84,4 +89,21 @@ test('zahlenhaus, zahlenmauer, zehnerstreifen, and nachbarzahlen render authenti
   assert.equal(sNachbar.tasks[0].type, 'nachbarzahlen');
   const nachbarHtml = renderExerciseView(sNachbar, profile);
   assert.ok(nachbarHtml.includes('nachbar-trio-card') && nachbarHtml.includes('nachbar-box'));
+
+  // 5. Visual renders for dice, hands, dots, dienes, number-line, and dot-array
+  const sDice = createExerciseSession('mathe-vs-t1-s2');
+  const diceHtml = renderExerciseView(sDice, profile);
+  assert.ok(diceHtml.includes('dice-svg'), 'dice stage must render SVG dice');
+
+  const sHands = createExerciseSession('mathe-vs-t2-s2');
+  const handsHtml = renderExerciseView(sHands, profile);
+  assert.ok(handsHtml.includes('two-hands-container'), 'two hands stage must render both hands');
+
+  const sDienes = createExerciseSession('mathe-kl2-t1-s1');
+  const dienesHtml = renderExerciseView(sDienes, profile);
+  assert.ok(dienesHtml.includes('dienes-material-tray'), 'Dienes stage must render base-10 blocks');
+
+  const sArray = createExerciseSession('mathe-kl2-t3-s1');
+  const arrayHtml = renderExerciseView(sArray, profile);
+  assert.ok(arrayHtml.includes('dot-array-tray'), 'Multiplication stage must render dot array grid');
 });

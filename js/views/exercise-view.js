@@ -168,11 +168,7 @@ export function renderExerciseView(session, profile) {
         <h3 class="task-prompt-text">${escapeHtml(currentTask.promptText)}</h3>
       </div>
 
-      ${currentTask.visual?.assetId ? `
-        <div class="task-visual-box">
-          ${renderAssetHtml(currentTask.visual.assetId, { size: 'lg' })}
-        </div>
-      ` : ''}
+      ${renderTaskVisual(currentTask)}
 
       <div class="task-interaction-zone">
         ${renderTaskInteraction(currentTask, session, isFeedback)}
@@ -225,7 +221,7 @@ function renderTaskInteraction(task, session, isFeedback) {
       const { roof, left, right } = task.payload;
       const isLeftGap = left === null;
       const isRightGap = right === null;
-      const currentVal = session.draftInput || '?';
+      const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
 
       return `
       <div class="interactive-zahlenhaus-stage">
@@ -263,7 +259,7 @@ function renderTaskInteraction(task, session, isFeedback) {
 
     case 'zahlenmauer': {
       const { base, mid, top, gap } = task.payload;
-      const currentVal = session.draftInput || '?';
+      const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
 
       return `
       <div class="interactive-zahlenmauer-stage">
@@ -302,7 +298,7 @@ function renderTaskInteraction(task, session, isFeedback) {
 
     case 'zehnerstreifen': {
       const { blueCount = 0, redCount = 0 } = task.payload;
-      const currentVal = session.draftInput || '?';
+      const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
 
       const circles = [];
       for (let i = 0; i < 10; i++) {
@@ -331,7 +327,7 @@ function renderTaskInteraction(task, session, isFeedback) {
 
     case 'nachbarzahlen': {
       const { centerNumber, gap, leftHeader = 'Vorgänger (-1)', centerHeader = 'Zahl', rightHeader = 'Nachfolger (+1)', fixedLeft, fixedRight } = task.payload;
-      const currentVal = session.draftInput || '?';
+      const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
       const isPrevGap = gap === 'prev';
       const prevVal = isPrevGap ? currentVal : (fixedLeft !== undefined ? fixedLeft : centerNumber - 1);
       const nextVal = !isPrevGap ? currentVal : (fixedRight !== undefined ? fixedRight : centerNumber + 1);
@@ -366,11 +362,13 @@ function renderTaskInteraction(task, session, isFeedback) {
     }
 
     case 'numpad-gap': {
+      const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
+      const hasInput = session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '';
       return `
       <div class="numpad-task-container">
         <div class="numpad-gap-display">
-          <span class="gap-slot ${session.draftInput ? 'filled' : 'empty'}">
-            ${session.draftInput || '?'}
+          <span class="gap-slot ${hasInput ? 'filled' : 'empty'}">
+            ${currentVal}
           </span>
         </div>
 
@@ -438,7 +436,12 @@ function renderTaskInteraction(task, session, isFeedback) {
 }
 
 function renderOnscreenNumpad(session, isFeedback) {
-  const hasInput = Boolean(session.draftInput && session.draftInput.length > 0);
+  const hasInput = Boolean(
+    session.draftInput !== undefined &&
+    session.draftInput !== null &&
+    String(session.draftInput).length > 0
+  );
+
   return `
   <div class="onscreen-numpad" role="group" aria-label="Ziffernblock">
     <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="1">1</button>
@@ -458,6 +461,292 @@ function renderOnscreenNumpad(session, isFeedback) {
     <button type="button" class="btn-touch numpad-submit-btn ${isFeedback || !hasInput ? 'disabled' : 'btn-ready'}" data-action="submit-card" title="Eingabe bestätigen">
       OK ✓
     </button>
+  </div>`;
+}
+
+export function renderTaskVisual(task) {
+  if (!task || !task.visual) return '';
+  const v = task.visual;
+
+  if (v.assetId) {
+    return `
+    <div class="task-visual-box">
+      ${renderAssetHtml(v.assetId, { size: 'lg' })}
+    </div>`;
+  }
+
+  if (v.type === 'dice') {
+    return `
+    <div class="task-visual-box visual-dice-box">
+      ${renderDiceSvg(v.count)}
+    </div>`;
+  }
+
+  if (v.type === 'two-hands') {
+    return `
+    <div class="task-visual-box visual-hands-box">
+      ${renderTwoHands(v.right)}
+    </div>`;
+  }
+
+  if (v.type === 'dots') {
+    return `
+    <div class="task-visual-box visual-dots-box">
+      ${renderCountingDots(v.count, v.color || '#0284c7')}
+    </div>`;
+  }
+
+  if (v.type === 'meadow') {
+    return `
+    <div class="task-visual-box visual-meadow-box">
+      ${renderAnimalMeadow(v.count, v.emoji || '🍎')}
+    </div>`;
+  }
+
+  if (v.type === 'compare-groups') {
+    return `
+    <div class="task-visual-box visual-compare-box">
+      ${renderCompareGroups(v.leftCount, v.rightCount, v.icon || '⭐')}
+    </div>`;
+  }
+
+  if (v.type === 'dienes') {
+    return `
+    <div class="task-visual-box visual-dienes-box">
+      ${renderDienesBlocks(v.tens, v.ones)}
+    </div>`;
+  }
+
+  if (v.type === 'number-line') {
+    return `
+    <div class="task-visual-box visual-numberline-box">
+      ${renderNumberLine(v.current, v.target, v.min, v.max)}
+    </div>`;
+  }
+
+  if (v.type === 'dot-array') {
+    return `
+    <div class="task-visual-box visual-array-box">
+      ${renderDotArray(v.rows, v.cols)}
+    </div>`;
+  }
+
+  if (v.type === 'zwerg-riese') {
+    return `
+    <div class="task-visual-box visual-zwerg-box">
+      ${renderZwergRieseCard(v.zwerg, v.riese)}
+    </div>`;
+  }
+
+  if (v.type === 'pattern') {
+    return `
+    <div class="task-visual-box visual-pattern-box">
+      ${renderPatternPreview(v.sequence, v.missingIndex)}
+    </div>`;
+  }
+
+  return '';
+}
+
+function renderDiceSvg(count) {
+  const pipMap = {
+    1: [[50, 50]],
+    2: [[30, 30], [70, 70]],
+    3: [[30, 30], [50, 50], [70, 70]],
+    4: [[30, 30], [70, 30], [30, 70], [70, 70]],
+    5: [[30, 30], [70, 30], [50, 50], [30, 70], [70, 70]],
+    6: [[30, 26], [30, 50], [30, 74], [70, 26], [70, 50], [70, 74]]
+  };
+  const pips = pipMap[count] || [[50, 50]];
+  const pipElements = pips.map(([cx, cy]) =>
+    `<circle cx="${cx}" cy="${cy}" r="9" fill="#dc2626" />`
+  ).join('');
+
+  return `
+  <div class="dice-wrapper">
+    <svg viewBox="0 0 100 100" width="108" height="108" class="dice-svg" aria-label="Würfel mit ${count} Augen">
+      <defs>
+        <radialGradient id="dieShine" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="70%" stop-color="#f8fafc" />
+          <stop offset="100%" stop-color="#e2e8f0" />
+        </radialGradient>
+      </defs>
+      <rect x="6" y="6" width="88" height="88" rx="20" fill="url(#dieShine)" stroke="#cbd5e1" stroke-width="4" filter="drop-shadow(0 6px 12px rgba(0,0,0,0.12))" />
+      ${pipElements}
+    </svg>
+  </div>`;
+}
+
+function renderTwoHands(rightCount) {
+  return `
+  <div class="two-hands-container">
+    <div class="hand-box left-hand">
+      ${renderAssetHtml('hand-l-5', { size: 'md' })}
+      <span class="hand-label">5 Finger</span>
+    </div>
+    <span class="hands-plus">+</span>
+    <div class="hand-box right-hand">
+      ${renderAssetHtml('hand-r-' + rightCount, { size: 'md' })}
+      <span class="hand-label">${rightCount} Finger</span>
+    </div>
+  </div>`;
+}
+
+function renderCountingDots(count, color = '#0284c7') {
+  const dots = [];
+  for (let i = 0; i < count; i++) {
+    dots.push(`
+      <div class="counting-dot" style="--dot-color: ${color};">
+        <span class="dot-shine"></span>
+      </div>
+    `);
+  }
+  return `
+  <div class="counting-dots-tray">
+    <div class="dots-grid dots-count-${count}">
+      ${dots.join('')}
+    </div>
+  </div>`;
+}
+
+function renderAnimalMeadow(count, emoji = '🍎') {
+  const items = [];
+  for (let i = 0; i < count; i++) {
+    items.push(`
+      <div class="meadow-item">
+        <span class="meadow-emoji" aria-hidden="true">${emoji}</span>
+      </div>
+    `);
+  }
+  return `
+  <div class="meadow-tray">
+    <div class="meadow-grid meadow-count-${count}">
+      ${items.join('')}
+    </div>
+  </div>`;
+}
+
+function renderCompareGroups(leftCount, rightCount, icon = '⭐') {
+  const makeIcons = (c) => Array.from({ length: c }, () => `<span class="compare-icon">${icon}</span>`).join('');
+  return `
+  <div class="compare-groups-tray">
+    <div class="compare-box compare-box-left">
+      <span class="compare-box-title">Gruppe A</span>
+      <div class="compare-icons-grid">${makeIcons(leftCount)}</div>
+      <span class="compare-badge">${leftCount}</span>
+    </div>
+    <div class="compare-vs">VS</div>
+    <div class="compare-box compare-box-right">
+      <span class="compare-box-title">Gruppe B</span>
+      <div class="compare-icons-grid">${makeIcons(rightCount)}</div>
+      <span class="compare-badge">${rightCount}</span>
+    </div>
+  </div>`;
+}
+
+function renderDienesBlocks(tens, ones) {
+  const tenBars = [];
+  for (let i = 0; i < tens; i++) {
+    tenBars.push(`
+      <div class="dienes-ten-bar" title="1 Zehnerstange (10 Einer)">
+        ${Array.from({ length: 10 }, () => '<span class="dienes-unit"></span>').join('')}
+      </div>
+    `);
+  }
+  const oneCubes = [];
+  for (let j = 0; j < ones; j++) {
+    oneCubes.push(`
+      <div class="dienes-one-cube" title="1 Einerwürfel"></div>
+    `);
+  }
+  return `
+  <div class="dienes-material-tray">
+    <div class="dienes-group dienes-tens">
+      <span class="dienes-title">Zehner (${tens})</span>
+      <div class="dienes-bars-row">${tenBars.join('')}</div>
+    </div>
+    <div class="dienes-divider"></div>
+    <div class="dienes-group dienes-ones">
+      <span class="dienes-title">Einer (${ones})</span>
+      <div class="dienes-cubes-grid">${oneCubes.join('')}</div>
+    </div>
+  </div>`;
+}
+
+function renderNumberLine(current, target, min = Math.max(0, current - 5), max = current + 10) {
+  const stones = [];
+  for (let n = min; n <= max; n++) {
+    const isCurrent = n === current;
+    const isTarget = n === target;
+    stones.push(`
+      <div class="number-stone ${isCurrent ? 'stone-current' : ''} ${isTarget ? 'stone-target' : ''}">
+        <span class="stone-val">${isTarget ? '?' : n}</span>
+        ${isCurrent ? '<span class="stone-pin">Hier!</span>' : ''}
+        ${isTarget ? '<span class="stone-target-pin">Ziel</span>' : ''}
+      </div>
+    `);
+  }
+  return `
+  <div class="number-line-tray">
+    <div class="number-line-track">
+      ${stones.join('')}
+    </div>
+    <div class="number-line-hop">
+      <span class="hop-arrow">↷ Sprung zum nächsten Zehner!</span>
+    </div>
+  </div>`;
+}
+
+function renderDotArray(rows, cols) {
+  const rowElements = [];
+  for (let r = 0; r < rows; r++) {
+    const dotsInRow = [];
+    for (let c = 0; c < cols; c++) {
+      dotsInRow.push(`<span class="array-dot">⭐</span>`);
+    }
+    rowElements.push(`
+      <div class="array-row">
+        <span class="array-row-label">Reihe ${r + 1}:</span>
+        <div class="array-row-dots">${dotsInRow.join('')}</div>
+        <span class="array-row-count">${cols}</span>
+      </div>
+    `);
+  }
+  return `
+  <div class="dot-array-tray">
+    <div class="array-grid-container">
+      ${rowElements.join('')}
+    </div>
+    <div class="array-summary-badge">${rows} Reihen mit je ${cols} = ?</div>
+  </div>`;
+}
+
+function renderZwergRieseCard(zwerg, riese) {
+  return `
+  <div class="zwerg-riese-tray">
+    <div class="zr-card zwerg-card">
+      <span class="zr-badge">🍄 Kleine Zwergen-Aufgabe</span>
+      <strong class="zr-math">${escapeHtml(zwerg)}</strong>
+    </div>
+    <div class="zr-arrow">⬇ hilft der ⬇</div>
+    <div class="zr-card riese-card">
+      <span class="zr-badge">🏰 Große Riesen-Aufgabe</span>
+      <strong class="zr-math">${escapeHtml(riese)}</strong>
+    </div>
+  </div>`;
+}
+
+function renderPatternPreview(sequence, missingIndex = -1) {
+  return `
+  <div class="pattern-preview-tray">
+    <div class="pattern-items-row">
+      ${sequence.map((item, idx) => `
+        <div class="pattern-item-box ${idx === missingIndex ? 'pattern-gap active' : ''}">
+          <span class="pattern-item-val">${idx === missingIndex ? '?' : escapeHtml(item)}</span>
+        </div>
+      `).join('')}
+    </div>
   </div>`;
 }
 

@@ -1,6 +1,6 @@
-// Lernreise Offline Service Worker (Cache-First)
+// Lernreise Offline Service Worker (Network-First for instant development & cache fallback for offline)
 
-const CACHE_NAME = 'lernreise-offline-v1';
+const CACHE_NAME = 'lernreise-offline-v2';
 
 const CORE_ASSETS = [
   './',
@@ -61,27 +61,25 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
+  // Network-First: Always fetch the newest version, update cache, and fallback to cache if offline
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        // Cache external assets like fonts if valid
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
           const clone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return networkResponse;
-      }).catch(() => {
-        // Offline fallback to app shell if navigating
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html') || caches.match('index.html');
-        }
-      });
-    })
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          if (event.request.mode === 'navigate') {
+            return caches.match('./index.html') || caches.match('index.html');
+          }
+        });
+      })
   );
 });

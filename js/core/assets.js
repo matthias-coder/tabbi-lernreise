@@ -1298,6 +1298,161 @@ export function getAsset(assetId) {
   };
 }
 
+const INLINE_CARD_SVGS = {
+  'card-apfel': `
+    <circle cx="50" cy="56" r="28" fill="#ef4444" />
+    <path d="M 50,28 Q 53,16 60,12" stroke="#78350f" stroke-width="4" stroke-linecap="round" fill="none" />
+    <path d="M 52,24 Q 66,16 62,30 Z" fill="#22c55e" />
+    <ellipse cx="40" cy="46" rx="4" ry="7" fill="#fca5a5" opacity="0.6" />`,
+  'card-mond': `
+    <path d="M 42,18 A 30,30 0 1,0 76,72 A 25,25 0 1,1 42,18 Z" fill="#facc15" stroke="#eab308" stroke-width="2" />
+    <polygon points="76,24 78,30 84,31 80,35 81,41 76,38 71,41 72,35 68,31 74,30" fill="#fde047" />
+    <polygon points="26,68 27,72 31,73 28,76 29,80 26,78 23,80 24,76 21,73 25,72" fill="#fde047" />`,
+  'card-sonne': `
+    <circle cx="50" cy="50" r="22" fill="#facc15" stroke="#f59e0b" stroke-width="3" />
+    <circle cx="43" cy="46" r="3" fill="#1e293b" />
+    <circle cx="57" cy="46" r="3" fill="#1e293b" />
+    <path d="M 44,55 Q 50,60 56,55" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none" />
+    <line x1="50" y1="14" x2="50" y2="22" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+    <line x1="50" y1="78" x2="50" y2="86" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+    <line x1="14" y1="50" x2="22" y2="50" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+    <line x1="78" y1="50" x2="86" y2="50" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+    <line x1="25" y1="25" x2="31" y2="31" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+    <line x1="69" y1="69" x2="75" y2="75" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+    <line x1="75" y1="25" x2="69" y2="31" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+    <line x1="31" y1="69" x2="25" y2="75" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />`,
+  'card-stern': `
+    <polygon points="50,14 61,38 86,40 67,57 73,82 50,69 27,82 33,57 14,40 39,38" fill="#facc15" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round" />
+    <circle cx="44" cy="48" r="3" fill="#1e293b" />
+    <circle cx="56" cy="48" r="3" fill="#1e293b" />
+    <path d="M 46,55 Q 50,58 54,55" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none" />`,
+  'card-auto': `
+    <path d="M 22,64 L 26,48 L 42,34 L 66,34 L 78,48 L 86,64 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
+    <rect x="42" y="38" width="22" height="12" rx="2" fill="#bfdbfe" />
+    <circle cx="34" cy="66" r="10" fill="#1e293b" stroke="#64748b" stroke-width="2" />
+    <circle cx="34" cy="66" r="4" fill="#ffffff" />
+    <circle cx="72" cy="66" r="10" fill="#1e293b" stroke="#64748b" stroke-width="2" />
+    <circle cx="72" cy="66" r="4" fill="#ffffff" />
+    <circle cx="84" cy="54" r="3" fill="#fef08a" />`,
+  'card-uhr': `
+    <circle cx="50" cy="54" r="28" fill="#ffffff" stroke="#3b82f6" stroke-width="5" />
+    <circle cx="50" cy="54" r="4" fill="#1e293b" />
+    <line x1="50" y1="54" x2="50" y2="36" stroke="#1e293b" stroke-width="3" stroke-linecap="round" />
+    <line x1="50" y1="54" x2="62" y2="54" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+    <ellipse cx="28" cy="24" rx="8" ry="4" transform="rotate(-30 28 24)" fill="#3b82f6" />
+    <ellipse cx="72" cy="24" rx="8" ry="4" transform="rotate(30 72 24)" fill="#3b82f6" />
+    <line x1="32" y1="78" x2="24" y2="86" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" />
+    <line x1="68" y1="78" x2="76" y2="86" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" />`,
+  'card-maus': `
+    <circle cx="30" cy="34" r="15" fill="#cbd5e1" stroke="#f472b6" stroke-width="4" />
+    <circle cx="70" cy="34" r="15" fill="#cbd5e1" stroke="#f472b6" stroke-width="4" />
+    <ellipse cx="50" cy="56" rx="24" ry="20" fill="#94a3b8" />
+    <circle cx="42" cy="50" r="3" fill="#1e293b" />
+    <circle cx="58" cy="50" r="3" fill="#1e293b" />
+    <circle cx="50" cy="62" r="4" fill="#f43f5e" />
+    <line x1="34" y1="62" x2="20" y2="58" stroke="#1e293b" stroke-width="2" />
+    <line x1="34" y1="65" x2="22" y2="69" stroke="#1e293b" stroke-width="2" />
+    <line x1="66" y1="62" x2="80" y2="58" stroke="#1e293b" stroke-width="2" />
+    <line x1="66" y1="65" x2="78" y2="69" stroke="#1e293b" stroke-width="2" />`,
+  'card-katze': `
+    <polygon points="28,42 22,22 42,34" fill="#f97316" stroke="#c2410c" stroke-width="2" />
+    <polygon points="72,42 78,22 58,34" fill="#f97316" stroke="#c2410c" stroke-width="2" />
+    <circle cx="50" cy="56" r="26" fill="#fb923c" />
+    <ellipse cx="41" cy="50" rx="3.5" ry="5" fill="#1e293b" />
+    <ellipse cx="59" cy="50" rx="3.5" ry="5" fill="#1e293b" />
+    <polygon points="50,58 46,63 54,63" fill="#f43f5e" />
+    <path d="M 46,66 Q 50,69 54,66" stroke="#1e293b" stroke-width="2" fill="none" />
+    <line x1="36" y1="60" x2="18" y2="58" stroke="#1e293b" stroke-width="1.5" />
+    <line x1="36" y1="63" x2="20" y2="67" stroke="#1e293b" stroke-width="1.5" />
+    <line x1="64" y1="60" x2="82" y2="58" stroke="#1e293b" stroke-width="1.5" />
+    <line x1="64" y1="63" x2="80" y2="67" stroke="#1e293b" stroke-width="1.5" />`,
+  'card-hund': `
+    <ellipse cx="26" cy="46" rx="8" ry="18" fill="#92400e" transform="rotate(-15 26 46)" />
+    <ellipse cx="74" cy="46" rx="8" ry="18" fill="#92400e" transform="rotate(15 74 46)" />
+    <circle cx="50" cy="54" r="24" fill="#b45309" />
+    <circle cx="41" cy="48" r="3" fill="#1e293b" />
+    <circle cx="59" cy="48" r="3" fill="#1e293b" />
+    <ellipse cx="50" cy="60" rx="10" ry="7" fill="#fef3c7" />
+    <ellipse cx="50" cy="57" rx="5" ry="3" fill="#1e293b" />
+    <path d="M 50,60 L 50,63" stroke="#1e293b" stroke-width="2" />
+    <path d="M 46,63 Q 50,66 54,63" stroke="#1e293b" stroke-width="2" fill="none" />`,
+  'card-ball': `
+    <circle cx="50" cy="50" r="28" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
+    <path d="M 50,22 Q 40,50 50,78" stroke="#ef4444" stroke-width="8" fill="none" />
+    <path d="M 22,50 Q 50,40 78,50" stroke="#3b82f6" stroke-width="8" fill="none" />
+    <circle cx="50" cy="50" r="6" fill="#ffffff" />`,
+  'card-baum': `
+    <rect x="44" y="54" width="12" height="30" rx="3" fill="#78350f" />
+    <circle cx="50" cy="38" r="22" fill="#16a34a" />
+    <circle cx="36" cy="46" r="16" fill="#22c55e" />
+    <circle cx="64" cy="46" r="16" fill="#22c55e" />
+    <circle cx="50" cy="24" r="14" fill="#4ade80" />`,
+  'card-fisch': `
+    <ellipse cx="46" cy="50" rx="26" ry="18" fill="#f97316" />
+    <polygon points="72,50 90,34 90,66" fill="#ea580c" />
+    <path d="M 38,34 Q 44,50 38,66" stroke="#ffffff" stroke-width="4" fill="none" />
+    <path d="M 54,36 Q 60,50 54,64" stroke="#ffffff" stroke-width="4" fill="none" />
+    <circle cx="28" cy="46" r="3" fill="#ffffff" />
+    <circle cx="28" cy="46" r="1.5" fill="#1e293b" />
+    <circle cx="16" cy="36" r="4" fill="#bae6fd" opacity="0.6" />
+    <circle cx="14" cy="26" r="3" fill="#bae6fd" opacity="0.6" />`,
+  'card-tomate': `
+    <circle cx="50" cy="56" r="26" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
+    <polygon points="50,30 44,22 50,26 56,22" fill="#15803d" />
+    <polygon points="50,26 40,32 50,30 60,32" fill="#16a34a" />
+    <ellipse cx="40" cy="48" rx="4" ry="7" fill="#fca5a5" opacity="0.6" />`,
+  'card-banane': `
+    <path d="M 28,30 C 58,26 76,50 72,70 C 58,56 42,46 26,44 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
+    <rect x="24" y="28" width="6" height="5" rx="2" fill="#78350f" />
+    <circle cx="71" cy="69" r="3" fill="#78350f" />`,
+  'card-blume': `
+    <circle cx="36" cy="40" r="10" fill="#f472b6" />
+    <circle cx="64" cy="40" r="10" fill="#f472b6" />
+    <circle cx="36" cy="60" r="10" fill="#f472b6" />
+    <circle cx="64" cy="60" r="10" fill="#f472b6" />
+    <circle cx="50" cy="34" r="10" fill="#f472b6" />
+    <circle cx="50" cy="66" r="10" fill="#f472b6" />
+    <circle cx="50" cy="50" r="12" fill="#facc15" stroke="#f59e0b" stroke-width="2" />`,
+  'card-igel': `
+    <path d="M 25,60 C 20,35 60,30 75,50 C 85,55 85,65 75,66 Z" fill="#78350f" />
+    <polygon points="30,40 34,26 42,36 48,22 56,34 64,22 68,38 76,28 76,46" fill="#451a03" />
+    <ellipse cx="72" cy="58" rx="12" ry="9" fill="#fde68a" />
+    <circle cx="76" cy="55" r="2" fill="#1e293b" />
+    <circle cx="82" cy="60" r="3" fill="#1e293b" />`,
+  'card-esel': `
+    <ellipse cx="26" cy="24" rx="6" ry="16" fill="#94a3b8" transform="rotate(-20 26 24)" />
+    <ellipse cx="44" cy="24" rx="6" ry="16" fill="#94a3b8" transform="rotate(20 44 24)" />
+    <circle cx="35" cy="46" r="20" fill="#64748b" />
+    <circle cx="28" cy="42" r="3" fill="#1e293b" />
+    <circle cx="42" cy="42" r="3" fill="#1e293b" />
+    <ellipse cx="35" cy="54" rx="10" ry="7" fill="#cbd5e1" />
+    <circle cx="32" cy="54" r="2" fill="#1e293b" />
+    <circle cx="38" cy="54" r="2" fill="#1e293b" />`,
+  'card-lama': `
+    <rect x="28" y="24" width="6" height="12" rx="2" fill="#fed7aa" />
+    <rect x="46" y="24" width="6" height="12" rx="2" fill="#fed7aa" />
+    <circle cx="40" cy="46" r="18" fill="#fef3c7" />
+    <circle cx="34" cy="42" r="3" fill="#1e293b" />
+    <circle cx="46" cy="42" r="3" fill="#1e293b" />
+    <ellipse cx="40" cy="50" rx="6" ry="4" fill="#fed7aa" />
+    <path d="M 38,52 Q 40,54 42,52" stroke="#1e293b" stroke-width="1.5" fill="none" />`,
+  'card-limo': `
+    <path d="M 32,24 L 36,78 L 64,78 L 68,24 Z" fill="#fef08a" stroke="#38bdf8" stroke-width="3" />
+    <line x1="42" y1="12" x2="52" y2="70" stroke="#f43f5e" stroke-width="4" stroke-linecap="round" />
+    <circle cx="44" cy="50" r="4" fill="#ffffff" opacity="0.6" />
+    <circle cx="56" cy="62" r="5" fill="#ffffff" opacity="0.6" />
+    <circle cx="50" cy="36" r="3" fill="#ffffff" opacity="0.6" />`,
+  'card-oma': `
+    <circle cx="50" cy="24" r="10" fill="#94a3b8" />
+    <circle cx="50" cy="52" r="22" fill="#fde68a" />
+    <circle cx="42" cy="48" r="6" fill="#ffffff" stroke="#1e293b" stroke-width="2" />
+    <circle cx="58" cy="48" r="6" fill="#ffffff" stroke="#1e293b" stroke-width="2" />
+    <line x1="48" y1="48" x2="52" y2="48" stroke="#1e293b" stroke-width="2" />
+    <circle cx="42" cy="48" r="2" fill="#1e293b" />
+    <circle cx="58" cy="48" r="2" fill="#1e293b" />
+    <path d="M 45,62 Q 50,66 55,62" stroke="#b91c1c" stroke-width="2" fill="none" />`
+};
+
 export function renderAssetHtml(assetId, options = {}) {
   const { size = 'md', showLabel = false, className = '' } = options;
   const asset = getAsset(assetId);
@@ -1310,14 +1465,21 @@ export function renderAssetHtml(assetId, options = {}) {
     </div>`;
   }
 
-  // Child-friendly vector placeholder card: NO raw file paths or filenames visible!
-  return `<div class="asset-card asset-placeholder ${className}" data-asset-id="${asset.id}" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;border-radius:12px;border:2px dashed ${asset.accent};background:${asset.accent}15;min-width:${sizePx}px;min-height:${sizePx}px;box-sizing:border-box;">
-    <svg viewBox="0 0 100 100" width="${Math.round(sizePx * 0.65)}" height="${Math.round(sizePx * 0.65)}" style="display:block;">
-      <rect x="15" y="15" width="70" height="70" rx="14" fill="${asset.accent}" opacity="0.25" />
-      <circle cx="50" cy="50" r="22" fill="${asset.accent}" opacity="0.45" />
-      <path d="M42 50 L48 56 L60 44" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-    </svg>
-    ${showLabel ? `<span class="asset-label" style="font-size:0.82rem;font-weight:700;color:${asset.accent};margin-top:4px;text-align:center;">${asset.label}</span>` : ''}
+  const inlineSvg = INLINE_CARD_SVGS[asset.id];
+  const innerContent = inlineSvg
+    ? `<svg viewBox="0 0 100 100" width="${Math.round(sizePx * 0.78)}" height="${Math.round(sizePx * 0.78)}" style="display:block;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.08));">
+        ${inlineSvg}
+       </svg>`
+    : `<svg viewBox="0 0 100 100" width="${Math.round(sizePx * 0.65)}" height="${Math.round(sizePx * 0.65)}" style="display:block;">
+        <rect x="15" y="15" width="70" height="70" rx="14" fill="${asset.accent}" opacity="0.25" />
+        <circle cx="50" cy="50" r="22" fill="${asset.accent}" opacity="0.45" />
+        <path d="M42 50 L48 56 L60 44" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+       </svg>`;
+
+  // Child-friendly vector card: Beautiful illustration with NO raw filenames in visible text!
+  return `<div class="asset-card asset-placeholder ${className}" data-asset-id="${asset.id}" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;border-radius:16px;border:3px solid ${asset.accent};background:#ffffff;box-shadow:0 6px 14px rgba(0,0,0,0.06);min-width:${sizePx}px;min-height:${sizePx}px;box-sizing:border-box;">
+    ${innerContent}
+    ${showLabel ? `<span class="asset-label" style="font-size:0.9rem;font-weight:800;color:#1e293b;margin-top:6px;text-align:center;">${asset.label}</span>` : ''}
   </div>`;
 }
 
