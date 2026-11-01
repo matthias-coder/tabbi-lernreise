@@ -128,17 +128,17 @@ export const ASSET_CATALOG = {
     "accent": "#0284c7",
     "category": "ui",
     "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "status": "ready"
   },
   "ui-deutsch": {
     "id": "ui-deutsch",
     "label": "Deutsch",
     "path": "assets/ui/icon-deutsch.svg",
     "description": "App-Icon Fach Deutsch (Buch, Leselupe, Buchstaben)",
-    "accent": "#0d9488",
+    "accent": "#dc2626",
     "category": "ui",
     "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "status": "ready"
   },
   "ui-taler": {
     "id": "ui-taler",
@@ -148,7 +148,7 @@ export const ASSET_CATALOG = {
     "accent": "#f59e0b",
     "category": "ui",
     "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "status": "ready"
   },
   "ui-surprise-chest": {
     "id": "ui-surprise-chest",
@@ -158,47 +158,47 @@ export const ASSET_CATALOG = {
     "accent": "#8b5cf6",
     "category": "ui",
     "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "status": "ready"
   },
   "ui-goal-tablet": {
     "id": "ui-goal-tablet",
     "label": "Tablet-Zeit",
-    "path": "assets/ui/goal-tablet.svg",
+    "path": "assets/ui/goal-tablet.jpg",
     "description": "Tablet-Bildschirm mit Spiele-Symbol",
     "accent": "#3b82f6",
     "category": "ui",
-    "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "format": "JPG, 1024x1024",
+    "status": "ready"
   },
   "ui-goal-meal": {
     "id": "ui-goal-meal",
     "label": "Lieblingsessen",
-    "path": "assets/ui/goal-meal.svg",
+    "path": "assets/ui/goal-meal.jpg",
     "description": "Teller mit Wunschessen / Besteck",
     "accent": "#ef4444",
     "category": "ui",
-    "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "format": "JPG, 1024x1024",
+    "status": "ready"
   },
   "ui-goal-cinema": {
     "id": "ui-goal-cinema",
     "label": "Kino / Film",
-    "path": "assets/ui/goal-cinema.svg",
+    "path": "assets/ui/goal-cinema.jpg",
     "description": "Popcorntüte mit Kinokarte",
     "accent": "#f97316",
     "category": "ui",
-    "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "format": "JPG, 1024x1024",
+    "status": "ready"
   },
   "ui-goal-trip": {
     "id": "ui-goal-trip",
     "label": "Ausflug",
-    "path": "assets/ui/goal-trip.svg",
+    "path": "assets/ui/goal-trip.jpg",
     "description": "Rucksack und Wegweiser",
     "accent": "#10b981",
     "category": "ui",
-    "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "format": "JPG, 1024x1024",
+    "status": "ready"
   },
   "ui-goal-book": {
     "id": "ui-goal-book",
@@ -208,7 +208,7 @@ export const ASSET_CATALOG = {
     "accent": "#6366f1",
     "category": "ui",
     "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "status": "ready"
   },
   "ui-goal-play": {
     "id": "ui-goal-play",
@@ -218,7 +218,7 @@ export const ASSET_CATALOG = {
     "accent": "#ec4899",
     "category": "ui",
     "format": "SVG, viewBox=\"0 0 256 256\"",
-    "status": "placeholder"
+    "status": "ready"
   },
   "avatar-body-monster": {
     "id": "avatar-body-monster",
@@ -1299,6 +1299,110 @@ export function getAsset(assetId) {
 }
 
 const INLINE_CARD_SVGS = {
+  'ui-mathe': `
+    <defs>
+      <linearGradient id="mathGradCard" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#38bdf8" />
+        <stop offset="100%" stop-color="#0284c7" />
+      </linearGradient>
+      <linearGradient id="diceGradCard" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffffff" />
+        <stop offset="100%" stop-color="#f8fafc" />
+      </linearGradient>
+    </defs>
+    <!-- Background Card -->
+    <rect x="6" y="6" width="88" height="88" rx="20" fill="url(#mathGradCard)" />
+    <!-- Mini Zahlenhaus -->
+    <polygon points="32,18 48,30 16,30" fill="#ef4444" stroke="#991b1b" stroke-width="1.5" />
+    <rect x="18" y="30" width="28" height="24" rx="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+    <line x1="32" y1="30" x2="32" y2="54" stroke="#cbd5e1" stroke-width="1.5" />
+    <text x="32" y="27" font-size="9" font-weight="900" fill="#ffffff" text-anchor="middle">5</text>
+    <text x="25" y="46" font-size="10" font-weight="900" fill="#0284c7" text-anchor="middle">2</text>
+    <text x="39" y="46" font-size="10" font-weight="900" fill="#0000cd" text-anchor="middle">3</text>
+    <!-- Mini Dice -->
+    <rect x="52" y="44" width="36" height="36" rx="8" fill="url(#diceGradCard)" stroke="#cbd5e1" stroke-width="1.5" />
+    <circle cx="61" cy="53" r="3" fill="#dc2626" />
+    <circle cx="79" cy="53" r="3" fill="#dc2626" />
+    <circle cx="70" cy="62" r="3" fill="#dc2626" />
+    <circle cx="61" cy="71" r="3" fill="#dc2626" />
+    <circle cx="79" cy="71" r="3" fill="#dc2626" />
+    <!-- Plus symbol badge -->
+    <circle cx="28" cy="74" r="14" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
+    <text x="28" y="80" font-size="16" font-weight="900" fill="#713f12" text-anchor="middle">+</text>
+  `,
+  'ui-deutsch': `
+    <defs>
+      <linearGradient id="deutschGradCard" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f43f5e" />
+        <stop offset="100%" stop-color="#dc2626" />
+      </linearGradient>
+    </defs>
+    <!-- Background Card in Grundschul-Rot -->
+    <rect x="6" y="6" width="88" height="88" rx="20" fill="url(#deutschGradCard)" />
+    <!-- Open Book / Fibel -->
+    <path d="M 16,36 Q 34,30 50,38 Q 66,30 84,36 L 84,68 Q 66,62 50,70 Q 34,62 16,68 Z" fill="#ffffff" stroke="#991b1b" stroke-width="2" />
+    <line x1="50" y1="38" x2="50" y2="70" stroke="#dc2626" stroke-width="2" />
+    <!-- Lines in Book -->
+    <line x1="22" y1="46" x2="44" y2="46" stroke="#fca5a5" stroke-width="1.5" />
+    <line x1="22" y1="52" x2="44" y2="52" stroke="#fca5a5" stroke-width="1.5" />
+    <line x1="22" y1="58" x2="38" y2="58" stroke="#fca5a5" stroke-width="1.5" />
+    <!-- Big Letters A B C -->
+    <text x="30" y="58" font-size="16" font-weight="900" fill="#dc2626">A</text>
+    <text x="56" y="52" font-size="14" font-weight="900" fill="#1e3a8a">B</text>
+    <text x="70" y="62" font-size="14" font-weight="900" fill="#f59e0b">C</text>
+    <!-- Gold Crown for Silbenkönig -->
+    <polygon points="50,14 56,22 66,16 64,28 36,28 34,16 44,22" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+    <circle cx="50" cy="14" r="1.5" fill="#ef4444" />
+    <circle cx="34" cy="16" r="1.5" fill="#3b82f6" />
+    <circle cx="66" cy="16" r="1.5" fill="#22c55e" />
+  `,
+  'ui-goal-tablet': `
+    <rect x="18" y="14" width="64" height="72" rx="12" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2.5" />
+    <rect x="24" y="22" width="52" height="52" rx="6" fill="#eff6ff" />
+    <polygon points="50,28 54,40 66,41 57,50 60,62 50,55 40,62 43,50 34,41 46,40" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+    <circle cx="50" cy="80" r="3" fill="#ffffff" />
+  `,
+  'ui-goal-meal': `
+    <circle cx="50" cy="50" r="38" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5" />
+    <circle cx="50" cy="50" r="28" fill="#ffffff" stroke="#eab308" stroke-width="1.5" />
+    <ellipse cx="50" cy="46" rx="18" ry="12" fill="#f59e0b" />
+    <ellipse cx="50" cy="42" rx="16" ry="10" fill="#fbbf24" />
+    <circle cx="50" cy="38" r="5" fill="#ef4444" />
+    <path d="M 20,36 L 20,64 M 17,36 L 17,46 M 23,36 L 23,46" stroke="#713f12" stroke-width="2" stroke-linecap="round" />
+    <path d="M 80,36 L 80,64 Q 84,50 80,36" stroke="#713f12" stroke-width="2" stroke-linecap="round" fill="#713f12" />
+  `,
+  'ui-goal-cinema': `
+    <path d="M 28,40 L 34,82 L 66,82 L 72,40 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
+    <path d="M 36,40 L 40,82 M 48,40 L 48,82 M 60,40 L 56,82" stroke="#ffffff" stroke-width="4" />
+    <circle cx="36" cy="36" r="8" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" />
+    <circle cx="50" cy="32" r="9" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" />
+    <circle cx="64" cy="36" r="8" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" />
+    <circle cx="43" cy="38" r="7" fill="#fef08a" />
+    <circle cx="57" cy="38" r="7" fill="#fef08a" />
+    <rect x="52" y="58" width="34" height="20" rx="3" fill="#f59e0b" stroke="#78350f" stroke-width="1.5" transform="rotate(-15 69 68)" />
+    <text x="69" y="72" font-size="8" font-weight="900" fill="#78350f" text-anchor="middle" transform="rotate(-15 69 68)">KINO</text>
+  `,
+  'ui-goal-trip': `
+    <rect x="28" y="32" width="44" height="50" rx="14" fill="#0d9488" stroke="#115e59" stroke-width="2.5" />
+    <rect x="36" y="52" width="28" height="24" rx="8" fill="#14b8a6" stroke="#115e59" stroke-width="2" />
+    <path d="M 28,44 Q 50,52 72,44 L 72,32 Q 50,26 28,32 Z" fill="#f59e0b" stroke="#b45309" stroke-width="2" />
+    <circle cx="50" cy="62" r="4" fill="#fef08a" stroke="#b45309" stroke-width="1.5" />
+    <path d="M 38,28 Q 50,16 62,28" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" fill="none" />
+  `,
+  'ui-goal-book': `
+    <path d="M 16,36 Q 34,28 50,36 Q 66,28 84,36 L 84,72 Q 66,64 50,72 Q 34,64 16,72 Z" fill="#6366f1" stroke="#3730a3" stroke-width="2.5" />
+    <path d="M 20,40 Q 34,34 48,40 L 48,68 Q 34,62 20,68 Z" fill="#ffffff" />
+    <path d="M 52,40 Q 66,34 80,40 L 80,68 Q 66,62 52,68 Z" fill="#ffffff" />
+    <polygon points="50,16 52,22 58,22 53,26 55,32 50,28 45,32 47,26 42,22 48,22" fill="#facc15" stroke="#ca8a04" stroke-width="1" />
+  `,
+  'ui-goal-play': `
+    <rect x="18" y="38" width="36" height="36" rx="8" fill="#ec4899" stroke="#9d174d" stroke-width="2" />
+    <circle cx="27" cy="47" r="3" fill="#ffffff" />
+    <circle cx="45" cy="65" r="3" fill="#ffffff" />
+    <circle cx="36" cy="56" r="3" fill="#ffffff" />
+    <circle cx="64" cy="38" r="8" fill="#f59e0b" stroke="#b45309" stroke-width="2" />
+    <path d="M 54,68 C 54,54 58,50 64,50 C 70,50 74,54 74,68 Z" fill="#f59e0b" stroke="#b45309" stroke-width="2" />
+  `,
   'card-apfel': `
     <circle cx="50" cy="56" r="28" fill="#ef4444" />
     <path d="M 50,28 Q 53,16 60,12" stroke="#78350f" stroke-width="4" stroke-linecap="round" fill="none" />

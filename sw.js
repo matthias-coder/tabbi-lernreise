@@ -1,6 +1,6 @@
 // Lernreise Offline Service Worker (Network-First for instant development & cache fallback for offline)
 
-const CACHE_NAME = 'lernreise-offline-v4';
+const CACHE_NAME = 'lernreise-offline-v5';
 
 const CORE_ASSETS = [
   './',
@@ -44,10 +44,26 @@ const CORE_ASSETS = [
   'assets/ui/schreibheft-stamp.svg',
   'assets/ui/tintenfleck.svg',
   'assets/ui/tintenfleck-corner.svg',
+  'assets/ui/icon-mathe.svg',
+  'assets/ui/icon-deutsch.svg',
+  'assets/ui/icon-taler.svg',
+  'assets/ui/icon-surprise-chest.svg',
+  'assets/ui/goal-tablet.svg',
+  'assets/ui/goal-meal.svg',
+  'assets/ui/goal-cinema.svg',
+  'assets/ui/goal-trip.svg',
+  'assets/ui/goal-book.svg',
+  'assets/ui/goal-play.svg',
   'assets/ui/schreibtisch-bg.jpg',
   'assets/ui/tintenklecks-art.jpg',
   'assets/ui/rechenheft-stempel.jpg',
-  'assets/ui/fibel-stempel.jpg'
+  'assets/ui/fibel-stempel.jpg',
+  'assets/ui/mathe-hub-banner.jpg',
+  'assets/ui/deutsch-hub-banner.jpg',
+  'assets/ui/goal-tablet.jpg',
+  'assets/ui/goal-meal.jpg',
+  'assets/ui/goal-cinema.jpg',
+  'assets/ui/goal-trip.jpg'
 ];
 
 self.addEventListener('install', (event) => {

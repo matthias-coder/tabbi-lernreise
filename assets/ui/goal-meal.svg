@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="100%" height="100%">
+  <defs>
+    <filter id="mealDrop" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#7f1d1d" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Big Plate -->
+  <g filter="url(#mealDrop)">
+    <circle cx="128" cy="136" r="92" fill="#ffffff" stroke="#e2e8f0" stroke-width="8" />
+    <circle cx="128" cy="136" r="70" fill="#fef08a" opacity="0.25" />
+
+    <!-- Pancakes Stack -->
+    <ellipse cx="128" cy="154" rx="54" ry="20" fill="#f59e0b" stroke="#b45309" stroke-width="3" />
+    <ellipse cx="128" cy="140" rx="50" ry="18" fill="#fbbf24" stroke="#b45309" stroke-width="3" />
+    <ellipse cx="128" cy="126" rx="46" ry="16" fill="#fde047" stroke="#b45309" stroke-width="3" />
+
+    <!-- Butter cube & melting syrup -->
+    <rect x="116" y="104" width="24" height="18" rx="4" fill="#fef08a" stroke="#ca8a04" stroke-width="2" />
+    <path d="M 122,122 Q 128,136 134,136 Q 140,136 142,128" stroke="#ca8a04" stroke-width="3" fill="none" />
+
+    <!-- Big Juicy Strawberry -->
+    <path d="M 104,116 C 92,106 100,92 110,98 C 120,92 128,106 116,116 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2" />
+    <polygon points="108,94 110,98 112,94 114,98 116,94 112,92" fill="#22c55e" />
+  </g>
+
+  <!-- Fork on left -->
+  <g transform="translate(16, 68)">
+    <path d="M 16,130 L 16,56 Q 8,48 8,24 M 16,56 L 16,24 M 16,56 Q 24,48 24,24" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Spoon / Knife on right -->
+  <g transform="translate(216, 68)">
+    <path d="M 16,130 L 16,60 C 26,50 26,24 16,24 C 6,24 6,50 16,60 Z" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" fill="#e2e8f0" />
+  </g>
+</svg>

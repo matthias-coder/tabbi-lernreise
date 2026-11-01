@@ -4,43 +4,43 @@
 
 ## 1. App- & Fach-Icons
 
-- [ ] `ui-mathe` – **Rechnen** (assets/ui/icon-mathe.svg)
+- [x] `ui-mathe` – **Rechnen** (assets/ui/icon-mathe.svg)
   - *Format:* SVG, viewBox="0 0 256 256"
   - *Beschreibung:* App-Icon Fach Rechnen / Mathematik (Zahlen, Würfel, Plus)
 
-- [ ] `ui-deutsch` – **Deutsch** (assets/ui/icon-deutsch.svg)
+- [x] `ui-deutsch` – **Deutsch** (assets/ui/icon-deutsch.svg)
   - *Format:* SVG, viewBox="0 0 256 256"
   - *Beschreibung:* App-Icon Fach Deutsch (Buch, Leselupe, Buchstaben)
 
-- [ ] `ui-taler` – **Taler** (assets/ui/icon-taler.svg)
+- [x] `ui-taler` – **Taler** (assets/ui/icon-taler.svg)
   - *Format:* SVG, viewBox="0 0 256 256"
   - *Beschreibung:* Goldene Taler-Münze mit Sternprägung für Eltern-Ziele
 
-- [ ] `ui-surprise-chest` – **Überraschungskiste** (assets/ui/icon-surprise-chest.svg)
+- [x] `ui-surprise-chest` – **Überraschungskiste** (assets/ui/icon-surprise-chest.svg)
   - *Format:* SVG, viewBox="0 0 256 256"
   - *Beschreibung:* Holztruhe mit goldenen Beschlägen und Glitzereffekt
 
-- [ ] `ui-goal-tablet` – **Tablet-Zeit** (assets/ui/goal-tablet.svg)
-  - *Format:* SVG, viewBox="0 0 256 256"
+- [x] `ui-goal-tablet` – **Tablet-Zeit** (assets/ui/goal-tablet.jpg)
+  - *Format:* JPG, 1024x1024
   - *Beschreibung:* Tablet-Bildschirm mit Spiele-Symbol
 
-- [ ] `ui-goal-meal` – **Lieblingsessen** (assets/ui/goal-meal.svg)
-  - *Format:* SVG, viewBox="0 0 256 256"
+- [x] `ui-goal-meal` – **Lieblingsessen** (assets/ui/goal-meal.jpg)
+  - *Format:* JPG, 1024x1024
   - *Beschreibung:* Teller mit Wunschessen / Besteck
 
-- [ ] `ui-goal-cinema` – **Kino / Film** (assets/ui/goal-cinema.svg)
-  - *Format:* SVG, viewBox="0 0 256 256"
+- [x] `ui-goal-cinema` – **Kino / Film** (assets/ui/goal-cinema.jpg)
+  - *Format:* JPG, 1024x1024
   - *Beschreibung:* Popcorntüte mit Kinokarte
 
-- [ ] `ui-goal-trip` – **Ausflug** (assets/ui/goal-trip.svg)
-  - *Format:* SVG, viewBox="0 0 256 256"
+- [x] `ui-goal-trip` – **Ausflug** (assets/ui/goal-trip.jpg)
+  - *Format:* JPG, 1024x1024
   - *Beschreibung:* Rucksack und Wegweiser
 
-- [ ] `ui-goal-book` – **Vorlesebuch** (assets/ui/goal-book.svg)
+- [x] `ui-goal-book` – **Vorlesebuch** (assets/ui/goal-book.svg)
   - *Format:* SVG, viewBox="0 0 256 256"
   - *Beschreibung:* Aufgeschlagenes Vorlesebuch mit Zaubersternen
 
-- [ ] `ui-goal-play` – **Spielezeit** (assets/ui/goal-play.svg)
+- [x] `ui-goal-play` – **Spielezeit** (assets/ui/goal-play.svg)
   - *Format:* SVG, viewBox="0 0 256 256"
   - *Beschreibung:* Brettspiel-Pöppel und Würfel
 

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="100%" height="100%">
+  <defs>
+    <linearGradient id="mathBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <filter id="mathDrop" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0369a1" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Card Base -->
+  <rect x="16" y="16" width="224" height="224" rx="48" fill="url(#mathBg)" filter="url(#mathDrop)" />
+
+  <!-- Mini Zahlenhaus -->
+  <g transform="translate(36, 44)">
+    <!-- Roof with goal number 10 -->
+    <polygon points="46,6 88,38 4,38" fill="#ef4444" stroke="#991b1b" stroke-width="3" stroke-linejoin="round" />
+    <text x="46" y="32" font-family="'Andika', system-ui, sans-serif" font-size="20" font-weight="900" fill="#ffffff" text-anchor="middle">10</text>
+    
+    <!-- House body with 2 columns -->
+    <rect x="8" y="38" width="76" height="66" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" />
+    <line x1="46" y1="38" x2="46" y2="104" stroke="#cbd5e1" stroke-width="3" />
+    <line x1="8" y1="71" x2="84" y2="71" stroke="#cbd5e1" stroke-width="2" />
+    <!-- Row 1: 4 + 6 -->
+    <text x="27" y="62" font-family="'Andika', system-ui, sans-serif" font-size="20" font-weight="900" fill="#0284c7" text-anchor="middle">4</text>
+    <text x="65" y="62" font-family="'Andika', system-ui, sans-serif" font-size="20" font-weight="900" fill="#0000cd" text-anchor="middle">6</text>
+    <!-- Row 2: 7 + 3 -->
+    <text x="27" y="95" font-family="'Andika', system-ui, sans-serif" font-size="20" font-weight="900" fill="#0284c7" text-anchor="middle">7</text>
+    <text x="65" y="95" font-family="'Andika', system-ui, sans-serif" font-size="20" font-weight="900" fill="#0000cd" text-anchor="middle">3</text>
+  </g>
+
+  <!-- Tactile Math Dice -->
+  <g transform="translate(136, 120)">
+    <rect x="0" y="0" width="84" height="84" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="4" filter="url(#mathDrop)" />
+    <!-- 5 pips in bright red -->
+    <circle cx="21" cy="21" r="7" fill="#dc2626" />
+    <circle cx="63" cy="21" r="7" fill="#dc2626" />
+    <circle cx="42" cy="42" r="7" fill="#dc2626" />
+    <circle cx="21" cy="63" r="7" fill="#dc2626" />
+    <circle cx="63" cy="63" r="7" fill="#dc2626" />
+  </g>
+
+  <!-- Plus symbol -->
+  <g transform="translate(144, 48)">
+    <circle cx="24" cy="24" r="22" fill="#facc15" stroke="#ca8a04" stroke-width="2.5" />
+    <path d="M 24,14 L 24,34 M 14,24 L 34,24" stroke="#78350f" stroke-width="5" stroke-linecap="round" />
+  </g>
+</svg>

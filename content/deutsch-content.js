@@ -786,7 +786,7 @@ export function generateDeutschStageRound(stageId, options = {}) {
 // Register Deutsch in subjects
 registerSubjectContent(
   'deutsch',
-  { title: 'Deutsch', icon: '📖', assetId: 'ui-deutsch', accent: '#0d9488' },
+  { title: 'Deutsch', icon: '📖', assetId: 'ui-deutsch', accent: '#dc2626' },
   DEUTSCH_TOPICS_BY_GRADE,
   generateDeutschStageRound
 );

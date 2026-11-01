@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="100%" height="100%">
+  <defs>
+    <linearGradient id="deutschBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f87171" />
+      <stop offset="100%" stop-color="#dc2626" />
+    </linearGradient>
+    <filter id="deutschDrop" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#7f1d1d" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Card Base -->
+  <rect x="16" y="16" width="224" height="224" rx="48" fill="url(#deutschBg)" filter="url(#deutschDrop)" />
+
+  <!-- Open Fibel Storybook -->
+  <g transform="translate(32, 60)" filter="url(#deutschDrop)">
+    <!-- Book cover/pages -->
+    <path d="M 12,32 Q 54,16 96,32 Q 138,16 180,32 L 180,128 Q 138,112 96,128 Q 54,112 12,128 Z" fill="#ffffff" stroke="#e2e8f0" stroke-width="4" />
+    <line x1="96" y1="32" x2="96" y2="128" stroke="#cbd5e1" stroke-width="4" />
+
+    <!-- Ruled lines on left page -->
+    <line x1="28" y1="52" x2="80" y2="52" stroke="#93c5fd" stroke-width="2" />
+    <line x1="28" y1="68" x2="80" y2="68" stroke="#fca5a5" stroke-width="2" />
+    <line x1="28" y1="84" x2="80" y2="84" stroke="#93c5fd" stroke-width="2" />
+    <line x1="28" y1="100" x2="72" y2="100" stroke="#93c5fd" stroke-width="2" />
+
+    <!-- Letters on left page -->
+    <text x="32" y="74" font-family="'Andika', system-ui, sans-serif" font-size="28" font-weight="900" fill="#0000cd">A</text>
+    <text x="56" y="74" font-family="'Andika', system-ui, sans-serif" font-size="28" font-weight="900" fill="#dc2626">B</text>
+
+    <!-- Right page: Silbenkönig Crown & Word -->
+    <!-- Crown -->
+    <path d="M 112,62 L 122,46 L 138,56 L 154,46 L 164,62 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
+    <circle cx="122" cy="45" r="3" fill="#dc2626" />
+    <circle cx="138" cy="55" r="3" fill="#2563eb" />
+    <circle cx="154" cy="45" r="3" fill="#dc2626" />
+
+    <!-- Syllable arches: MA - MA -->
+    <path d="M 114,104 Q 128,94 142,104" stroke="#dc2626" stroke-width="3" fill="none" stroke-linecap="round" />
+    <path d="M 142,104 Q 156,94 170,104" stroke="#2563eb" stroke-width="3" fill="none" stroke-linecap="round" />
+    <text x="128" y="94" font-family="'Andika', system-ui, sans-serif" font-size="22" font-weight="900" fill="#1e293b" text-anchor="middle">Ma</text>
+    <text x="156" y="94" font-family="'Andika', system-ui, sans-serif" font-size="22" font-weight="900" fill="#1e293b" text-anchor="middle">ma</text>
+  </g>
+
+  <!-- Golden Crown Badge at top -->
+  <g transform="translate(100, 24)">
+    <circle cx="28" cy="28" r="26" fill="#fef08a" stroke="#ca8a04" stroke-width="3" />
+    <path d="M 14,36 L 18,22 L 28,30 L 38,22 L 42,36 Z" fill="#f59e0b" stroke="#78350f" stroke-width="2" />
+    <circle cx="28" cy="35" r="2" fill="#dc2626" />
+  </g>
+</svg>
