@@ -43,7 +43,7 @@ export const DEUTSCH_TOPICS_BY_GRADE = {
       stages: [
         { id: 'deutsch-kl1-t1-s1', title: 'Stufe 1: Erste Silben lesen', targetScore: 8 },
         { id: 'deutsch-kl1-t1-s2', title: 'Stufe 2: Zweisilbige Fibel-Wörter', targetScore: 8 },
-        { id: 'deutsch-kl1-t1-s3', title: 'Stufe 3: Wort und Bild verbinden', targetScore: 8 }
+        { id: 'deutsch-kl1-t1-s3', title: 'Stufe 3: Silbenkönige krönen', targetScore: 8 }
       ]
     },
     {
@@ -53,7 +53,7 @@ export const DEUTSCH_TOPICS_BY_GRADE = {
       stages: [
         { id: 'deutsch-kl1-t2-s1', title: 'Stufe 1: Erste Silbe fehlt', targetScore: 8 },
         { id: 'deutsch-kl1-t2-s2', title: 'Stufe 2: Zweite Silbe fehlt', targetScore: 8 },
-        { id: 'deutsch-kl1-t2-s3', title: 'Stufe 3: Ganzes Wort aus Silben bauen', targetScore: 8 }
+        { id: 'deutsch-kl1-t2-s3', title: 'Stufe 3: Schüttelwörter lösen', targetScore: 8 }
       ]
     },
     {
@@ -343,26 +343,27 @@ export function generateDeutschStageRound(stageId, options = {}) {
         }
       });
     } else if (stageId === 'deutsch-kl1-t1-s3') {
-      const pairs = [
-        { word: 'Mond', assetId: 'card-mond' },
-        { word: 'Sonne', assetId: 'card-sonne' },
-        { word: 'Fisch', assetId: 'card-fisch' },
-        { word: 'Baum', assetId: 'card-baum' },
-        { word: 'Blume', assetId: 'card-blume' },
-        { word: 'Haus', assetId: 'card-haus' },
-        { word: 'Buch', assetId: 'card-buch' },
-        { word: 'Katze', assetId: 'card-katze' }
+      const items = [
+        { word: 'HAUS', tokens: ['H', 'AU', 'S'], kings: [1] },
+        { word: 'SONNE', tokens: ['S', 'O', 'NN', 'E'], kings: [1, 3] },
+        { word: 'BAUM', tokens: ['B', 'AU', 'M'], kings: [1] },
+        { word: 'MOND', tokens: ['M', 'O', 'ND'], kings: [1] },
+        { word: 'FISCH', tokens: ['F', 'I', 'SCH'], kings: [1] },
+        { word: 'BLUME', tokens: ['BL', 'U', 'M', 'E'], kings: [1, 3] },
+        { word: 'MAUS', tokens: ['M', 'AU', 'S'], kings: [1] },
+        { word: 'RAKETE', tokens: ['R', 'A', 'K', 'E', 'T', 'E'], kings: [1, 3, 5] }
       ];
-      const cur = pairs[i];
+      const cur = items[i % items.length];
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'choice-cards',
-        promptText: `Welches Wort passt zum Bild?`,
-        speechText: `Welches Wort passt zu dem Bild?`,
-        visual: { assetId: cur.assetId },
-        correctAnswer: cur.word,
+        type: 'silbenkoenig',
+        promptText: `Setze die Krone 👑 auf alle Silbenkönige:`,
+        speechText: `Silbenkönige sind die Klingenlaute. Setze jedem Silbenkönig eine Krone auf!`,
+        correctAnswer: cur.kings,
         payload: {
-          choices: makeChoices(cur.word, ['Mond', 'Sonne', 'Fisch', 'Baum', 'Blume', 'Haus'])
+          word: cur.word,
+          tokens: cur.tokens,
+          correctKings: cur.kings
         }
       });
     } else if (stageId === 'deutsch-kl1-t2-s1') {
@@ -410,25 +411,27 @@ export function generateDeutschStageRound(stageId, options = {}) {
         }
       });
     } else if (stageId === 'deutsch-kl1-t2-s3') {
-      const words = [
-        { word: 'Tomate', tiles: ['To', 'ma', 'te'] },
-        { word: 'Banane', tiles: ['Ba', 'na', 'ne'] },
-        { word: 'Limonade', tiles: ['Li', 'mo', 'na', 'de'] },
-        { word: 'Salomo', tiles: ['Sa', 'lo', 'mo'] },
-        { word: 'Tomate', tiles: ['To', 'ma', 'te'] },
-        { word: 'Banane', tiles: ['Ba', 'na', 'ne'] },
-        { word: 'Melone', tiles: ['Me', 'lo', 'ne'] },
-        { word: 'Tomate', tiles: ['To', 'ma', 'te'] }
+      const puzzles = [
+        { word: 'OMA', scrambled: ['M', 'A', 'O'], assetId: 'card-oma' },
+        { word: 'SONNE', scrambled: ['N', 'O', 'S', 'E', 'N'], assetId: 'card-sonne' },
+        { word: 'MOND', scrambled: ['N', 'D', 'M', 'O'], assetId: 'card-mond' },
+        { word: 'BAUM', scrambled: ['U', 'M', 'B', 'A'], assetId: 'card-baum' },
+        { word: 'FISCH', scrambled: ['S', 'F', 'I', 'H', 'C'], assetId: 'card-fisch' },
+        { word: 'BLUME', scrambled: ['L', 'M', 'B', 'E', 'U'], assetId: 'card-blume' },
+        { word: 'MAUS', scrambled: ['U', 'S', 'M', 'A'], assetId: 'card-maus' },
+        { word: 'BALL', scrambled: ['L', 'B', 'A', 'L'], assetId: 'card-ball' }
       ];
-      const w = words[i];
+      const cur = puzzles[i % puzzles.length];
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'sequence-order',
-        promptText: `Baue das Wort [${w.word}] aus Silbenkacheln:`,
-        speechText: `Bringe die Silben in die richtige Reihenfolge, um ${w.word} zu schreiben.`,
-        correctAnswer: w.tiles,
+        type: 'schuettelwort',
+        promptText: `Schüttelwort: Setze das Wort zusammen!`,
+        speechText: `Die Buchstaben haben sich geschüttelt. Bringe sie in die richtige Reihenfolge!`,
+        correctAnswer: cur.word,
         payload: {
-          tiles: [...w.tiles].sort(() => Math.random() - 0.5)
+          word: cur.word,
+          scrambled: cur.scrambled,
+          assetId: cur.assetId
         }
       });
     } else if (stageId === 'deutsch-kl1-t3-s1') {

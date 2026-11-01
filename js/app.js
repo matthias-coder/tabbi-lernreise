@@ -284,6 +284,67 @@ class LernreiseApp {
           break;
         }
 
+        case 'place-coin': {
+          if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'place-coin', value: val });
+          this.render();
+          break;
+        }
+
+        case 'remove-coin': {
+          if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
+          const index = target.getAttribute('data-index');
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'remove-coin', index });
+          this.render();
+          break;
+        }
+
+        case 'clear-coins': {
+          if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'clear-coins' });
+          this.render();
+          break;
+        }
+
+        case 'toggle-crown': {
+          if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
+          const index = target.getAttribute('data-index');
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'toggle-crown', index });
+          this.render();
+          break;
+        }
+
+        case 'place-letter': {
+          if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
+          const letter = target.getAttribute('data-letter');
+          const originIdx = target.getAttribute('data-origin-idx');
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'place-letter', letter, originIdx });
+          this.render();
+          break;
+        }
+
+        case 'remove-letter': {
+          if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
+          const index = target.getAttribute('data-index');
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'remove-letter', index });
+          this.render();
+          break;
+        }
+
+        case 'clear-letters': {
+          if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
+          this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'clear-letters' });
+          this.render();
+          break;
+        }
+
         case 'submit-card': {
           if (!this.exerciseSession || this.exerciseSession.phase !== 'answering') return;
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'submit-card' });

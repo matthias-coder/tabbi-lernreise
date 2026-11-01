@@ -53,7 +53,7 @@ export const MATHE_TOPICS_BY_GRADE = {
       stages: [
         { id: 'mathe-kl1-t2-s1', title: 'Stufe 1: Plusaufgaben bis 10', targetScore: 8 },
         { id: 'mathe-kl1-t2-s2', title: 'Stufe 2: Minusaufgaben bis 10', targetScore: 8 },
-        { id: 'mathe-kl1-t2-s3', title: 'Stufe 3: Zwerg & Riese bis 20', targetScore: 8 }
+        { id: 'mathe-kl1-t2-s3', title: 'Stufe 3: Rechendreiecke bis 20', targetScore: 8 }
       ]
     },
     {
@@ -62,7 +62,7 @@ export const MATHE_TOPICS_BY_GRADE = {
       description: 'Vorgänger, Nachfolger und Zahlenmauern bis 20',
       stages: [
         { id: 'mathe-kl1-t3-s1', title: 'Stufe 1: Nachbarzahlen bis 20', targetScore: 8 },
-        { id: 'mathe-kl1-t3-s2', title: 'Stufe 2: Zahlen ordnen bis 20', targetScore: 8 },
+        { id: 'mathe-kl1-t3-s2', title: 'Stufe 2: Euro-Münzen zählen bis 20', targetScore: 8 },
         { id: 'mathe-kl1-t3-s3', title: 'Stufe 3: Zahlenmauern bis 20', targetScore: 8 }
       ]
     }
@@ -74,7 +74,7 @@ export const MATHE_TOPICS_BY_GRADE = {
       description: 'Zehner und Einer bündeln und Nachbarn finden',
       stages: [
         { id: 'mathe-kl2-t1-s1', title: 'Stufe 1: Zehner und Einer bündeln', targetScore: 8 },
-        { id: 'mathe-kl2-t1-s2', title: 'Stufe 2: Nachbarzehner bis 100', targetScore: 8 },
+        { id: 'mathe-kl2-t1-s2', title: 'Stufe 2: Hundertertafel-Kreuz', targetScore: 8 },
         { id: 'mathe-kl2-t1-s3', title: 'Stufe 3: Zahlen ordnen bis 100', targetScore: 8 }
       ]
     },
@@ -84,7 +84,7 @@ export const MATHE_TOPICS_BY_GRADE = {
       description: 'Zweistellige Aufgaben schrittweise lösen',
       stages: [
         { id: 'mathe-kl2-t2-s1', title: 'Stufe 1: Rechnen ohne Zehnerübergang', targetScore: 8 },
-        { id: 'mathe-kl2-t2-s2', title: 'Stufe 2: Glatte Zehnerzahlen rechnen', targetScore: 8 },
+        { id: 'mathe-kl2-t2-s2', title: 'Stufe 2: Geldbeträge im Portemonnaie legen', targetScore: 8 },
         { id: 'mathe-kl2-t2-s3', title: 'Stufe 3: Rechnen mit Zehnerübergang', targetScore: 8 }
       ]
     },
@@ -94,7 +94,7 @@ export const MATHE_TOPICS_BY_GRADE = {
       description: 'Malreihen, Quadrataufgaben und Kernaufgaben',
       stages: [
         { id: 'mathe-kl2-t3-s1', title: 'Stufe 1: 2er-, 5er- und 10er-Reihe', targetScore: 8 },
-        { id: 'mathe-kl2-t3-s2', title: 'Stufe 2: Quadrat- & Kernaufgaben', targetScore: 8 },
+        { id: 'mathe-kl2-t3-s2', title: 'Stufe 2: Uhrzeiten am Zifferblatt', targetScore: 8 },
         { id: 'mathe-kl2-t3-s3', title: 'Stufe 3: Gemischtes Einmaleins', targetScore: 8 }
       ]
     }
@@ -319,21 +319,49 @@ export function generateMatheStageRound(stageId, options = {}) {
         payload: { maxDigits: 2 }
       });
     } else if (stageId === 'mathe-kl1-t2-s3') {
-      const a = 2 + (i % 4);
-      const b = 3;
-      const bigA = 10 + a;
+      const triples = [
+        { a: 3, b: 4, c: 5 },
+        { a: 2, b: 6, c: 4 },
+        { a: 5, b: 2, c: 7 },
+        { a: 4, b: 5, c: 3 },
+        { a: 6, b: 3, c: 5 },
+        { a: 2, b: 7, c: 6 },
+        { a: 4, b: 4, c: 8 },
+        { a: 5, b: 6, c: 4 }
+      ];
+      const cur = triples[i % triples.length];
+      const a = cur.a;
+      const b = cur.b;
+      const c = cur.c;
+      const sumAB = a + b;
+      const sumBC = b + c;
+      const sumCA = c + a;
+      const gapOptions = ['sumAB', 'sumBC', 'sumCA', 'a', 'b', 'c'];
+      const gap = gapOptions[i % gapOptions.length];
+      let correctAnswer;
+      if (gap === 'sumAB') correctAnswer = sumAB;
+      else if (gap === 'sumBC') correctAnswer = sumBC;
+      else if (gap === 'sumCA') correctAnswer = sumCA;
+      else if (gap === 'a') correctAnswer = a;
+      else if (gap === 'b') correctAnswer = b;
+      else correctAnswer = c;
+
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Zwerg: ${a} + ${b} = ${a + b} → Riese: ${bigA} + ${b} = ?`,
-        speechText: `Kleine Zwergenaufgabe hilft der Riesenaufgabe: Wie viel ist ${bigA} plus ${b}?`,
-        visual: {
-          type: 'zwerg-riese',
-          zwerg: `${a} + ${b} = ${a + b}`,
-          riese: `${bigA} + ${b} = ?`
-        },
-        correctAnswer: bigA + b,
-        payload: { maxDigits: 2 }
+        type: 'rechendreieck',
+        promptText: `Rechendreieck: Welche Zahl fehlt im freien Feld?`,
+        speechText: `Im Rechendreieck: Zwei Innenecken ergeben zusammen das Außenfeld. Welche Zahl fehlt?`,
+        correctAnswer,
+        payload: {
+          a,
+          b,
+          c,
+          sumAB,
+          sumBC,
+          sumCA,
+          gap,
+          maxDigits: 2
+        }
       });
     } else if (stageId === 'mathe-kl1-t3-s1') {
       const center = 11 + (i % 8);
@@ -351,15 +379,29 @@ export function generateMatheStageRound(stageId, options = {}) {
         }
       });
     } else if (stageId === 'mathe-kl1-t3-s2') {
-      const start = 10 + (i % 6);
+      const coinSets = [
+        [2, 2, 1],          // 5 €
+        [5, 2, 1],          // 8 €
+        [5, 5, 2],          // 12 €
+        [10, 2, 2, 1],      // 15 €
+        [10, 5, 1],         // 16 €
+        [2, 2, 2, 1],       // 7 €
+        [10, 5, 2, 2],      // 19 €
+        [5, 5, 5, 2, 1]     // 18 €
+      ];
+      const coins = coinSets[i % coinSets.length];
+      const total = coins.reduce((acc, c) => acc + c, 0);
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'sequence-order',
-        promptText: `Ordne die Zahlen vorwärts:`,
-        speechText: `Ordne die Zahlen von klein nach groß.`,
-        correctAnswer: [start, start + 1, start + 2],
+        type: 'geld-betrag',
+        promptText: `Wie viel Euro liegt im Portemonnaie?`,
+        speechText: `Zähle das Geld: Wie viele Euro sind das zusammen?`,
+        correctAnswer: total,
         payload: {
-          tiles: [start + 2, start, start + 1]
+          mode: 'count',
+          coins,
+          target: total,
+          maxDigits: 2
         }
       });
     } else if (stageId === 'mathe-kl1-t3-s3') {
@@ -402,22 +444,31 @@ export function generateMatheStageRound(stageId, options = {}) {
         payload: { maxDigits: 3 }
       });
     } else if (stageId === 'mathe-kl2-t1-s2') {
-      const n = 25 + (i * 8);
-      const nextTen = Math.ceil(n / 10) * 10;
+      const centers = [35, 52, 64, 48, 73, 26, 58, 67];
+      const center = centers[i % centers.length];
+      const gaps = ['top', 'bottom', 'left', 'right'];
+      const gap = gaps[i % gaps.length];
+      let correctAnswer;
+      if (gap === 'top') correctAnswer = center - 10;
+      else if (gap === 'bottom') correctAnswer = center + 10;
+      else if (gap === 'left') correctAnswer = center - 1;
+      else correctAnswer = center + 1;
+
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Nächster Zehner nach ${n} = ?`,
-        speechText: `Welcher glatte Zehner folgt auf die Zahl ${n}?`,
-        visual: {
-          type: 'number-line',
-          current: n,
-          target: nextTen,
-          min: Math.floor(n / 10) * 10,
-          max: nextTen + 5
-        },
-        correctAnswer: nextTen,
-        payload: { maxDigits: 3 }
+        type: 'hunderter-kreuz',
+        promptText: `Hundertertafel-Kreuz: Welche Zahl gehört ins freie Feld?`,
+        speechText: `Auf dem Hundertertafel-Kreuz: Zehner gehen nach oben und unten, Einer nach links und rechts. Welche Zahl fehlt?`,
+        correctAnswer,
+        payload: {
+          center,
+          top: center - 10,
+          bottom: center + 10,
+          left: center - 1,
+          right: center + 1,
+          gap,
+          maxDigits: 3
+        }
       });
     } else if (stageId === 'mathe-kl2-t1-s3') {
       const nums = [20 + i * 5, 40 + i * 4, 60 + i * 3].sort((a, b) => a - b);
@@ -443,15 +494,19 @@ export function generateMatheStageRound(stageId, options = {}) {
         payload: { maxDigits: 3 }
       });
     } else if (stageId === 'mathe-kl2-t2-s2') {
-      const a = 20 + ((i % 5) * 10);
-      const b = 10 + ((i % 4) * 10);
+      const targets = [6, 7, 9, 12, 14, 15, 17, 18];
+      const target = targets[i % targets.length];
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `${a} + ${b} = ?`,
-        speechText: `Zehner rechnen: Wie viel ist ${a} plus ${b}?`,
-        correctAnswer: a + b,
-        payload: { maxDigits: 3 }
+        type: 'geld-betrag',
+        promptText: `Lege genau ${target} € in dein Portemonnaie:`,
+        speechText: `Tippe auf die Münzen und Scheine, um genau ${target} Euro ins Portemonnaie zu legen.`,
+        correctAnswer: target,
+        payload: {
+          mode: 'place',
+          target,
+          available: [1, 2, 5, 10, 20]
+        }
       });
     } else if (stageId === 'mathe-kl2-t2-s3') {
       const a = 28 + (i % 8);
@@ -477,15 +532,27 @@ export function generateMatheStageRound(stageId, options = {}) {
         payload: { maxDigits: 3 }
       });
     } else if (stageId === 'mathe-kl2-t3-s2') {
-      const num = 2 + (i % 8);
+      const clockTasks = [
+        { hours: 3, minutes: 0, ans: '3:00 Uhr', distractors: ['4:00 Uhr', '2:30 Uhr', '12:15 Uhr'] },
+        { hours: 8, minutes: 30, ans: '8:30 Uhr (halb 9)', distractors: ['9:30 Uhr', '8:00 Uhr', '7:30 Uhr'] },
+        { hours: 12, minutes: 0, ans: '12:00 Uhr', distractors: ['1:00 Uhr', '11:30 Uhr', '6:00 Uhr'] },
+        { hours: 6, minutes: 30, ans: '6:30 Uhr (halb 7)', distractors: ['7:30 Uhr', '5:30 Uhr', '6:00 Uhr'] },
+        { hours: 9, minutes: 0, ans: '9:00 Uhr', distractors: ['10:00 Uhr', '8:30 Uhr', '9:30 Uhr'] },
+        { hours: 2, minutes: 30, ans: '2:30 Uhr (halb 3)', distractors: ['3:30 Uhr', '1:30 Uhr', '2:00 Uhr'] },
+        { hours: 10, minutes: 0, ans: '10:00 Uhr', distractors: ['11:00 Uhr', '9:30 Uhr', '10:30 Uhr'] },
+        { hours: 4, minutes: 30, ans: '4:30 Uhr (halb 5)', distractors: ['5:30 Uhr', '3:30 Uhr', '4:00 Uhr'] }
+      ];
+      const cur = clockTasks[i % clockTasks.length];
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Quadrataufgabe: ${num} × ${num} = ?`,
-        speechText: `Quadratzahl: Wie viel ist ${num} mal ${num}?`,
-        visual: { type: 'dot-array', rows: num, cols: num },
-        correctAnswer: num * num,
-        payload: { maxDigits: 3 }
+        type: 'choice-cards',
+        promptText: `Wie spät ist es auf der Uhr?`,
+        speechText: `Schaue auf die Zeiger der Uhr: Wie spät ist es?`,
+        visual: { type: 'analog-clock', hours: cur.hours, minutes: cur.minutes },
+        correctAnswer: cur.ans,
+        payload: {
+          choices: makeChoices(cur.ans, cur.distractors)
+        }
       });
     } else if (stageId === 'mathe-kl2-t3-s3') {
       const a = 3 + (i % 6);

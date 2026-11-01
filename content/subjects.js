@@ -72,6 +72,47 @@ export function evaluateTaskAnswer(task, userAnswer) {
     };
   }
 
+  if (task.type === 'silbenkoenig') {
+    const expected = (Array.isArray(task.correctAnswer) ? task.correctAnswer : [task.correctAnswer]).map(Number).sort((a, b) => a - b);
+    const user = (Array.isArray(userAnswer) ? userAnswer : []).map(Number).sort((a, b) => a - b);
+    const isCorrect = expected.length === user.length && expected.every((val, i) => val === user[i]);
+    const tokens = task.payload?.tokens || [];
+    const expectedDisplay = expected.map(idx => tokens[idx] || idx).join(', ');
+    const userDisplay = user.map(idx => tokens[idx] || idx).join(', ');
+    return {
+      isCorrect,
+      expectedDisplay: expectedDisplay || 'Keine Silbenkönige',
+      userDisplay: userDisplay || 'Keine markiert'
+    };
+  }
+
+  if (task.type === 'schuettelwort') {
+    const userWord = Array.isArray(userAnswer) ? userAnswer.join('') : String(userAnswer || '');
+    const expectedWord = String(task.correctAnswer || '').trim();
+    const isCorrect = userWord.trim().toLowerCase() === expectedWord.toLowerCase();
+    return {
+      isCorrect,
+      expectedDisplay: expectedWord,
+      userDisplay: userWord
+    };
+  }
+
+  if (task.type === 'geld-betrag' && task.payload?.mode === 'place') {
+    let total = 0;
+    if (typeof userAnswer === 'number') {
+      total = userAnswer;
+    } else {
+      const items = Array.isArray(userAnswer) ? userAnswer : [];
+      total = items.reduce((sum, item) => sum + (typeof item === 'object' && item !== null ? (item.value || 0) : Number(item) || 0), 0);
+    }
+    const isCorrect = total === task.correctAnswer;
+    return {
+      isCorrect,
+      expectedDisplay: `${task.correctAnswer} €`,
+      userDisplay: `${total} €`
+    };
+  }
+
   if (typeof task.correctAnswer === 'number') {
     const userNum = Number(userAnswer);
     const isCorrect = !Number.isNaN(userNum) && userNum === task.correctAnswer;

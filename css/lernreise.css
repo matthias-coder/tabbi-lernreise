@@ -1477,6 +1477,510 @@ body {
   animation: pulse-gap 2s infinite ease-in-out;
 }
 
+/* 5. Rechendreieck (Triangle with 3 Corner Nodes & 3 Edge Sums) */
+.interactive-rechendreieck-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.rechendreieck-toy {
+  position: relative;
+  width: 280px;
+  height: 230px;
+  margin: 0 auto;
+  filter: drop-shadow(0 6px 16px rgba(15, 23, 42, 0.08));
+}
+
+.dreieck-shape-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dreieck-node {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #94a3b8;
+  z-index: 2;
+}
+
+.node-a {
+  top: 6px;
+  left: calc(50% - 26px);
+}
+
+.node-b {
+  bottom: 8px;
+  left: 10px;
+}
+
+.node-c {
+  bottom: 8px;
+  right: 10px;
+}
+
+.dreieck-node.node-given {
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  border: 3px solid #0284c7;
+  color: #0369a1;
+  box-shadow: 0 4px 0 #0284c7;
+}
+
+.dreieck-edge {
+  position: absolute;
+  width: 52px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #ca8a04;
+  z-index: 2;
+}
+
+.edge-ab {
+  top: 96px;
+  left: 32px;
+}
+
+.edge-bc {
+  bottom: 12px;
+  left: calc(50% - 26px);
+}
+
+.edge-ca {
+  top: 96px;
+  right: 32px;
+}
+
+.dreieck-edge.edge-given {
+  background: #fef08a;
+  border: 2px solid #ca8a04;
+  color: #854d0e;
+}
+
+.dreieck-node.node-gap.active,
+.dreieck-edge.edge-gap.active {
+  background: #fef9c3;
+  border: 3px solid #eab308;
+  color: #0000cd;
+  box-shadow: 0 4px 0 #ca8a04;
+  animation: pulse-gap 2s infinite ease-in-out;
+}
+
+/* 6. Hundertertafel-Kreuz (3x3 Plus Cross) */
+.interactive-hunderter-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.hunderter-kreuz-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  grid-template-rows: repeat(3, 72px);
+  gap: 6px;
+  justify-content: center;
+  margin: 8px auto;
+}
+
+.kreuz-cell {
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  box-shadow: 0 4px 0 #cbd5e1;
+}
+
+.kreuz-cell.cell-empty {
+  visibility: hidden;
+  box-shadow: none;
+}
+
+.kreuz-cell.cell-given {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  color: #1e293b;
+}
+
+.kreuz-cell.cell-center {
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  border: 3px solid #0284c7;
+  color: #0369a1;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #0284c7;
+}
+
+.kreuz-cell.cell-gap.active {
+  background: #fef08a;
+  border: 3px solid #eab308;
+  color: #0000cd;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #ca8a04;
+  animation: pulse-gap 2s infinite ease-in-out;
+}
+
+/* 7. Geld Betrag (Counting & Placing Euro coins/bills) */
+.interactive-geld-count-stage,
+.interactive-geld-place-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.geld-tray {
+  background: #f8fafc;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.geld-coins-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.euro-coin {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+.euro-coin.bicolor {
+  background: radial-gradient(circle, #facc15 60%, #cbd5e1 62%);
+  border: 3px solid #ca8a04;
+  color: #1e293b;
+}
+
+.euro-coin.gold {
+  background: radial-gradient(circle at 35% 35%, #fef08a 0%, #eab308 80%, #ca8a04 100%);
+  border: 3px solid #a16207;
+  color: #713f12;
+}
+
+.euro-bill {
+  width: 78px;
+  height: 48px;
+  border-radius: 6px;
+  background: var(--bill-bg, #bbf7d0);
+  border: 2px solid var(--bill-border, #15803d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: #1e293b;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Geld Place Mode */
+.geld-wallet-area {
+  background: #fefce8;
+  border: 3px dashed #ca8a04;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 440px;
+  min-height: 100px;
+}
+
+.wallet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #854d0e;
+  font-size: 0.95rem;
+}
+
+.wallet-coins-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  min-height: 56px;
+  align-items: center;
+}
+
+.coin-placed-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.coin-placed-btn:active {
+  transform: scale(0.92);
+}
+
+.wallet-empty-hint {
+  color: #a16207;
+  font-style: italic;
+  font-size: 0.95rem;
+  margin: 12px 0;
+}
+
+.geld-bank-area {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+}
+
+.bank-label {
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.bank-coins-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.coin-bank-btn {
+  background: #ffffff;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #cbd5e1;
+  transition: transform 0.1s, border-color 0.15s;
+}
+
+.coin-bank-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #cbd5e1;
+}
+
+.geld-actions-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 8. Silbenkönig Stage (Vowels / Diphthongs Crown Placement) */
+.interactive-silbenkoenig-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.silben-word-card {
+  background: #ffffff;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  box-shadow: var(--shadow-card);
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.silben-tokens-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.silben-token-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #f8fafc;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  min-width: 64px;
+  min-height: 84px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #94a3b8;
+  transition: all 0.15s ease;
+}
+
+.silben-token-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #94a3b8;
+}
+
+.silben-token-btn.crowned {
+  background: #fefce8;
+  border-color: #eab308;
+  box-shadow: 0 4px 0 #ca8a04, 0 0 12px rgba(234, 179, 8, 0.3);
+}
+
+.crown-slot {
+  height: 28px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.token-letter {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.silben-token-btn.crowned .token-letter {
+  color: #a16207;
+}
+
+.silben-hint {
+  font-size: 0.95rem;
+  color: #64748b;
+  text-align: center;
+  margin: 0;
+  max-width: 440px;
+}
+
+.silben-actions-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 9. Schüttelwort Stage (Scrambled Letters with Touch Placement) */
+.interactive-schuettelwort-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.schuettel-asset-wrap {
+  margin-bottom: 6px;
+}
+
+.word-slots-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.letter-slot-btn,
+.letter-slot-box {
+  width: 56px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+.letter-slot-box.empty {
+  background: #f1f5f9;
+  border: 2px dashed #94a3b8;
+  color: #94a3b8;
+}
+
+.letter-slot-btn.filled {
+  background: #eff6ff;
+  border: 3px solid #0284c7;
+  color: #0284c7;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0284c7;
+}
+
+.scrambled-letters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.letter-pick-btn {
+  width: 58px;
+  height: 60px;
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1e293b;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #94a3b8;
+  transition: all 0.12s ease;
+}
+
+.letter-pick-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #94a3b8;
+}
+
+.letter-pick-btn.used {
+  opacity: 0.25;
+  pointer-events: none;
+  border-color: #e2e8f0;
+  box-shadow: none;
+}
+
+.schuettel-actions-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 10. Analog Clock Visual */
+.analog-clock-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.clock-svg {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.12));
+}
+
 /* ==========================================================================
    Tactile 3-Column Onscreen Numpad (Bugfree: OK is ALWAYS visible in Col 3)
    ========================================================================== */

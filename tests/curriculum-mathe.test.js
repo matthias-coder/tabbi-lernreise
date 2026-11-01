@@ -31,7 +31,8 @@ test('every Mathe stage generates 8 unambiguous, age-safe, solvable tasks across
         for (const task of tasks) {
           assert.ok([
             'choice-cards', 'numpad-gap', 'tile-builder', 'sequence-order',
-            'zahlenhaus', 'zahlenmauer', 'zehnerstreifen', 'nachbarzahlen'
+            'zahlenhaus', 'zahlenmauer', 'zehnerstreifen', 'nachbarzahlen',
+            'rechendreieck', 'hunderter-kreuz', 'geld-betrag'
           ].includes(task.type), `unexpected task type ${task.type} in ${stageId}`);
           assert.ok(task.promptText.length > 3 && task.speechText.length > 3);
           if (task.type === 'choice-cards') {

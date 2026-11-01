@@ -15,6 +15,8 @@ export function createExerciseSession(stageId, options = {}) {
     phase: 'answering', // 'answering' | 'feedback' | 'completed'
     draftInput: '',
     selectedTiles: [],
+    selectedCoins: [],
+    crownedTokens: [],
     results: [],
     confirmCancel: false,
     correctCount: 0
@@ -71,12 +73,66 @@ export function applyExerciseAction(session, action = {}) {
       };
     }
 
+    case 'place-coin': {
+      const coins = [...(session.selectedCoins || [])];
+      const coinVal = Number(action.value);
+      const coinLabel = action.label || `${coinVal} €`;
+      coins.push({ id: Date.now() + Math.random(), value: coinVal, label: coinLabel });
+      return { ...session, selectedCoins: coins };
+    }
+
+    case 'remove-coin': {
+      const coins = [...(session.selectedCoins || [])];
+      const idx = Number(action.index);
+      if (idx >= 0 && idx < coins.length) coins.splice(idx, 1);
+      return { ...session, selectedCoins: coins };
+    }
+
+    case 'clear-coins': {
+      return { ...session, selectedCoins: [] };
+    }
+
+    case 'toggle-crown': {
+      const crowns = [...(session.crownedTokens || [])];
+      const idx = Number(action.index);
+      const pos = crowns.indexOf(idx);
+      if (pos >= 0) crowns.splice(pos, 1);
+      else crowns.push(idx);
+      return { ...session, crownedTokens: crowns };
+    }
+
+    case 'place-letter': {
+      const tiles = [...(session.selectedTiles || [])];
+      const originIdx = Number(action.originIdx);
+      if (!tiles.some(t => typeof t === 'object' && t.originIdx === originIdx)) {
+        tiles.push({ letter: action.letter, originIdx });
+      }
+      return { ...session, selectedTiles: tiles };
+    }
+
+    case 'remove-letter': {
+      const tiles = [...(session.selectedTiles || [])];
+      const idx = Number(action.index);
+      if (idx >= 0 && idx < tiles.length) tiles.splice(idx, 1);
+      return { ...session, selectedTiles: tiles };
+    }
+
+    case 'clear-letters': {
+      return { ...session, selectedTiles: [] };
+    }
+
     case 'submit-card': {
       if (session.phase !== 'answering') return session;
 
       let answerToEval = session.draftInput;
       if (currentTask.type === 'sequence-order') {
         answerToEval = session.selectedTiles;
+      } else if (currentTask.type === 'schuettelwort') {
+        answerToEval = (session.selectedTiles || []).map(t => typeof t === 'object' ? t.letter : t);
+      } else if (currentTask.type === 'silbenkoenig') {
+        answerToEval = session.crownedTokens || [];
+      } else if (currentTask.type === 'geld-betrag' && currentTask.payload?.mode === 'place') {
+        answerToEval = session.selectedCoins || [];
       }
 
       const evalResult = evaluateTaskAnswer(currentTask, answerToEval);
@@ -109,6 +165,8 @@ export function applyExerciseAction(session, action = {}) {
           phase: 'answering',
           draftInput: '',
           selectedTiles: [],
+          selectedCoins: [],
+          crownedTokens: [],
           confirmCancel: false
         };
       }
@@ -430,6 +488,226 @@ function renderTaskInteraction(task, session, isFeedback) {
       </div>`;
     }
 
+    case 'rechendreieck': {
+      const { a, b, c, sumAB, sumBC, sumCA, gap } = task.payload;
+      const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
+
+      return `
+      <div class="interactive-rechendreieck-stage">
+        <div class="rechendreieck-toy">
+          <svg class="dreieck-shape-svg" viewBox="0 0 280 230" aria-hidden="true">
+            <polygon points="140,32 36,196 244,196" fill="#f0f9ff" stroke="#0284c7" stroke-width="4" stroke-linejoin="round" />
+            <line x1="140" y1="32" x2="140" y2="142" stroke="#bae6fd" stroke-width="2" stroke-dasharray="4,4" />
+            <line x1="36" y1="196" x2="140" y2="142" stroke="#bae6fd" stroke-width="2" stroke-dasharray="4,4" />
+            <line x1="244" y1="196" x2="140" y2="142" stroke="#bae6fd" stroke-width="2" stroke-dasharray="4,4" />
+          </svg>
+
+          <!-- Corner A (Top) -->
+          <div class="dreieck-node node-a ${gap === 'a' ? 'node-gap active' : 'node-given'}">
+            <span>${gap === 'a' ? currentVal : a}</span>
+          </div>
+
+          <!-- Corner B (Bottom-Left) -->
+          <div class="dreieck-node node-b ${gap === 'b' ? 'node-gap active' : 'node-given'}">
+            <span>${gap === 'b' ? currentVal : b}</span>
+          </div>
+
+          <!-- Corner C (Bottom-Right) -->
+          <div class="dreieck-node node-c ${gap === 'c' ? 'node-gap active' : 'node-given'}">
+            <span>${gap === 'c' ? currentVal : c}</span>
+          </div>
+
+          <!-- Edge AB (Left) -->
+          <div class="dreieck-edge edge-ab ${gap === 'sumAB' ? 'edge-gap active' : 'edge-given'}">
+            <span>${gap === 'sumAB' ? currentVal : sumAB}</span>
+          </div>
+
+          <!-- Edge BC (Bottom) -->
+          <div class="dreieck-edge edge-bc ${gap === 'sumBC' ? 'edge-gap active' : 'edge-given'}">
+            <span>${gap === 'sumBC' ? currentVal : sumBC}</span>
+          </div>
+
+          <!-- Edge CA (Right) -->
+          <div class="dreieck-edge edge-ca ${gap === 'sumCA' ? 'edge-gap active' : 'edge-given'}">
+            <span>${gap === 'sumCA' ? currentVal : sumCA}</span>
+          </div>
+        </div>
+
+        ${renderOnscreenNumpad(session, isFeedback)}
+      </div>`;
+    }
+
+    case 'hunderter-kreuz': {
+      const { center, top, bottom, left, right, gap } = task.payload;
+      const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
+
+      return `
+      <div class="interactive-hunderter-stage">
+        <div class="hunderter-kreuz-grid">
+          <div class="kreuz-cell cell-empty"></div>
+          <div class="kreuz-cell cell-top ${gap === 'top' ? 'cell-gap active' : 'cell-given'}">
+            <span>${gap === 'top' ? currentVal : top}</span>
+          </div>
+          <div class="kreuz-cell cell-empty"></div>
+
+          <div class="kreuz-cell cell-left ${gap === 'left' ? 'cell-gap active' : 'cell-given'}">
+            <span>${gap === 'left' ? currentVal : left}</span>
+          </div>
+          <div class="kreuz-cell cell-center cell-given">
+            <span>${center}</span>
+          </div>
+          <div class="kreuz-cell cell-right ${gap === 'right' ? 'cell-gap active' : 'cell-given'}">
+            <span>${gap === 'right' ? currentVal : right}</span>
+          </div>
+
+          <div class="kreuz-cell cell-empty"></div>
+          <div class="kreuz-cell cell-bottom ${gap === 'bottom' ? 'cell-gap active' : 'cell-given'}">
+            <span>${gap === 'bottom' ? currentVal : bottom}</span>
+          </div>
+          <div class="kreuz-cell cell-empty"></div>
+        </div>
+
+        ${renderOnscreenNumpad(session, isFeedback)}
+      </div>`;
+    }
+
+    case 'geld-betrag': {
+      const mode = task.payload?.mode || 'count';
+      if (mode === 'count') {
+        const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
+        const coins = task.payload.coins || [5, 2];
+        return `
+        <div class="interactive-geld-count-stage">
+          <div class="geld-tray">
+            <span class="geld-tray-title">Zähle das Geld im Portemonnaie:</span>
+            <div class="geld-coins-row">
+              ${coins.map(c => renderCoinOrBill(c)).join('')}
+            </div>
+          </div>
+
+          <div class="streifen-gap-display">
+            <span>Betrag:</span>
+            <span class="gap-slot filled">${currentVal} €</span>
+          </div>
+
+          ${renderOnscreenNumpad(session, isFeedback)}
+        </div>`;
+      }
+
+      // Mode: place
+      const placedCoins = session.selectedCoins || [];
+      const available = task.payload.availableCoins || [1, 2, 5, 10];
+      const canSubmit = placedCoins.length > 0;
+
+      return `
+      <div class="interactive-geld-place-stage">
+        <div class="geld-wallet-area">
+          <div class="wallet-header">
+            <span class="wallet-title">Dein Portemonnaie (Antippen zum Herausnehmen):</span>
+            <span class="wallet-count-badge">${placedCoins.length} Münzen / Scheine</span>
+          </div>
+          <div class="wallet-coins-grid">
+            ${placedCoins.length > 0 ? placedCoins.map((coin, idx) => `
+              <button type="button" class="btn-touch coin-placed-btn ${isFeedback ? 'disabled' : ''}" data-action="remove-coin" data-index="${idx}" title="Zurück in den Vorrat">
+                ${renderCoinOrBill(coin.value)}
+              </button>
+            `).join('') : `<span class="wallet-empty-hint">Tippe unten auf Münzen oder Scheine, um sie hineinzulegen!</span>`}
+          </div>
+        </div>
+
+        <div class="geld-bank-area">
+          <span class="bank-title">Münzen- & Schein-Vorrat:</span>
+          <div class="bank-coins-row">
+            ${available.map(val => `
+              <button type="button" class="btn-touch coin-bank-btn ${isFeedback ? 'disabled' : ''}" data-action="place-coin" data-value="${val}" title="${val} € ins Portemonnaie legen">
+                ${renderCoinOrBill(val)}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="geld-actions-row">
+          <button type="button" class="btn-touch btn-secondary ${isFeedback || !canSubmit ? 'disabled' : ''}" data-action="clear-coins">Alles leeren</button>
+          <button type="button" class="btn-touch btn-primary ${isFeedback || !canSubmit ? 'disabled' : 'btn-ready'}" data-action="submit-card">OK ✓</button>
+        </div>
+      </div>`;
+    }
+
+    case 'silbenkoenig': {
+      const tokens = task.payload?.tokens || ['H', 'AU', 'S'];
+      const crowned = new Set(session.crownedTokens || []);
+      const canSubmit = crowned.size > 0;
+
+      return `
+      <div class="interactive-silbenkoenig-stage">
+        <div class="silben-word-card">
+          <div class="silben-tokens-row">
+            ${tokens.map((token, idx) => {
+              const isCrowned = crowned.has(idx);
+              return `
+              <button type="button" class="btn-touch silben-token-btn ${isCrowned ? 'crowned' : ''} ${isFeedback ? 'disabled' : ''}" data-action="toggle-crown" data-index="${idx}">
+                <div class="crown-slot">${isCrowned ? '👑' : '<span class="crown-placeholder"></span>'}</div>
+                <span class="token-letter">${escapeHtml(token)}</span>
+              </button>`;
+            }).join('')}
+          </div>
+        </div>
+
+        <p class="silben-hint">Tippe auf alle Silbenkönige (Vokale wie A, E, I, O, U, AU, EI), um ihnen eine Krone aufzusetzen!</p>
+
+        <div class="silben-actions-row">
+          <button type="button" class="btn-touch btn-primary btn-large ${isFeedback || !canSubmit ? 'disabled' : 'btn-ready'}" data-action="submit-card">
+            OK ✓
+          </button>
+        </div>
+      </div>`;
+    }
+
+    case 'schuettelwort': {
+      const { word, scrambled, assetId } = task.payload;
+      const placed = session.selectedTiles || [];
+      const placedOrigins = new Set(placed.map(t => typeof t === 'object' ? t.originIdx : -1));
+      const canSubmit = placed.length === word.length;
+
+      return `
+      <div class="interactive-schuettelwort-stage">
+        ${assetId ? `
+          <div class="schuettel-asset-wrap">
+            ${renderAssetHtml(assetId, { size: 'lg' })}
+          </div>
+        ` : ''}
+
+        <div class="word-slots-display">
+          ${Array.from({ length: word.length }).map((_, idx) => {
+            const item = placed[idx];
+            if (item) {
+              const letter = typeof item === 'object' ? item.letter : item;
+              return `
+              <button type="button" class="btn-touch letter-slot-btn filled ${isFeedback ? 'disabled' : ''}" data-action="remove-letter" data-index="${idx}" title="Buchstabe entfernen">
+                ${escapeHtml(letter)}
+              </button>`;
+            }
+            return `<span class="letter-slot-box empty">_</span>`;
+          }).join('')}
+        </div>
+
+        <div class="scrambled-letters-row">
+          ${scrambled.map((letter, originIdx) => {
+            const isUsed = placedOrigins.has(originIdx);
+            return `
+            <button type="button" class="btn-touch letter-pick-btn ${isUsed ? 'used' : ''} ${isFeedback ? 'disabled' : ''}" data-action="place-letter" data-letter="${escapeHtml(letter)}" data-origin-idx="${originIdx}">
+              ${escapeHtml(letter)}
+            </button>`;
+          }).join('')}
+        </div>
+
+        <div class="schuettel-actions-row">
+          <button type="button" class="btn-touch btn-secondary ${isFeedback || placed.length === 0 ? 'disabled' : ''}" data-action="clear-letters">Neu anfangen</button>
+          <button type="button" class="btn-touch btn-primary ${isFeedback || !canSubmit ? 'disabled' : 'btn-ready'}" data-action="submit-card">OK ✓</button>
+        </div>
+      </div>`;
+    }
+
     default:
       return `<div class="unknown-task-type">Aufgabentyp wird geladen…</div>`;
   }
@@ -545,7 +823,66 @@ export function renderTaskVisual(task) {
     </div>`;
   }
 
+  if (v.type === 'analog-clock') {
+    return `
+    <div class="task-visual-box visual-clock-box">
+      ${renderAnalogClockSvg(v.hours, v.minutes)}
+    </div>`;
+  }
+
   return '';
+}
+
+function renderAnalogClockSvg(hours = 12, minutes = 0) {
+  const hourAngle = ((hours % 12) * 30) + (minutes * 0.5);
+  const minuteAngle = minutes * 6;
+
+  const hourNumbers = [];
+  for (let h = 1; h <= 12; h++) {
+    const angleRad = (h * 30 - 90) * (Math.PI / 180);
+    const x = 100 + 68 * Math.cos(angleRad);
+    const y = 100 + 68 * Math.sin(angleRad) + 5;
+    hourNumbers.push(`<text x="${x}" y="${y}" text-anchor="middle" font-size="16" font-weight="900" fill="#1e293b">${h}</text>`);
+  }
+
+  return `
+  <div class="analog-clock-wrapper">
+    <svg viewBox="0 0 200 200" width="160" height="160" class="clock-svg" aria-label="Analoge Uhr">
+      <defs>
+        <radialGradient id="clockShine" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="85%" stop-color="#f8fafc" />
+          <stop offset="100%" stop-color="#e2e8f0" />
+        </radialGradient>
+      </defs>
+      <circle cx="100" cy="100" r="92" fill="url(#clockShine)" stroke="#0284c7" stroke-width="8" filter="drop-shadow(0 6px 14px rgba(0,0,0,0.12))" />
+      <circle cx="100" cy="100" r="84" fill="none" stroke="#cbd5e1" stroke-width="2" />
+      ${hourNumbers.join('')}
+      <line x1="100" y1="100" x2="100" y2="52" stroke="#dc2626" stroke-width="6" stroke-linecap="round" transform="rotate(${hourAngle} 100 100)" />
+      <line x1="100" y1="100" x2="100" y2="30" stroke="#0284c7" stroke-width="4.5" stroke-linecap="round" transform="rotate(${minuteAngle} 100 100)" />
+      <circle cx="100" cy="100" r="6" fill="#1e293b" />
+      <circle cx="100" cy="100" r="2.5" fill="#facc15" />
+    </svg>
+  </div>`;
+}
+
+function renderCoinOrBill(val) {
+  const num = Number(val);
+  if (num === 5 || num === 10 || num === 20) {
+    const bg = num === 5 ? '#bfdbfe' : (num === 10 ? '#fecaca' : '#bbf7d0');
+    const border = num === 5 ? '#1d4ed8' : (num === 10 ? '#b91c1c' : '#15803d');
+    return `
+    <div class="euro-bill bill-${num}" style="--bill-bg: ${bg}; --bill-border: ${border};">
+      <span class="bill-val">${num} €</span>
+    </div>`;
+  }
+  const is50ct = num === 0.5 || String(val).includes('ct');
+  const label = is50ct ? '50 ct' : `${num} €`;
+  const isBicolor = num === 1 || num === 2;
+  return `
+  <div class="euro-coin coin-${is50ct ? '50ct' : num} ${isBicolor ? 'bicolor' : 'gold'}">
+    <span class="coin-val">${label}</span>
+  </div>`;
 }
 
 function renderDiceSvg(count) {
