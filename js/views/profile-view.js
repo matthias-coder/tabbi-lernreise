@@ -2,9 +2,10 @@
 
 import { renderAvatarSvg } from '../core/assets.js';
 import { GRADES } from '../../content/subjects.js';
+import { AVATAR_CATALOG } from '../../content/avatar-catalog.js';
 
 export function renderProfileView(state, uiState = {}) {
-  const { creating = false, draftName = '', draftGrade = 'klasse1', draftBody = 'monster' } = uiState;
+  const { creating = false, draftName = '', draftGrade = 'klasse1', draftBody = 'archetype-child' } = uiState;
 
   if (creating) {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ'.split('');
@@ -42,12 +43,12 @@ export function renderProfileView(state, uiState = {}) {
         </div>
 
         <div class="create-form-section">
-          <div class="section-label">3. Figur wählen:</div>
+          <div class="section-label">3. Start-Figur wählen:</div>
           <div class="body-chips-row">
-            ${['monster', 'boy', 'girl'].map(b => `
-              <button type="button" class="btn-touch body-chip ${draftBody === b ? 'active' : ''}" data-action="set-draft-body" data-value="${b}">
-                <div class="chip-avatar-preview">${renderAvatarSvg({ bodyType: b, skinColorId: 'mint' }, { size: 48 })}</div>
-                <span>${b === 'monster' ? 'Monster 👾' : b === 'boy' ? 'Junge 👦' : 'Mädchen 👧'}</span>
+            ${AVATAR_CATALOG.starterArchetypes.map(arch => `
+              <button type="button" class="btn-touch body-chip ${draftBody === arch.id ? 'active' : ''}" data-action="set-draft-body" data-value="${arch.id}">
+                <div class="chip-avatar-preview">${renderAvatarSvg(arch.preset, { size: 48 })}</div>
+                <span>${arch.label} ${arch.icon}</span>
               </button>
             `).join('')}
           </div>

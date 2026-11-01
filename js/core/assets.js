@@ -1588,13 +1588,38 @@ export function renderAssetHtml(assetId, options = {}) {
 }
 
 export function renderAvatarSvg(avatarConfig = {}, options = {}) {
-  const {
-    bodyType = 'monster',
-    skinColorId = 'mint',
+  // Support both modular schema and legacy bodyType
+  let {
+    headId,
+    torsoId,
+    legsId,
+    bodyType,
+    skinColorId = 'fair',
+    clothColorId = 'sky',
     hairStyleId = 'tuft',
     hairColorId = 'brown',
     accessoryIds = []
   } = avatarConfig;
+
+  // Fallback migration for legacy profiles
+  if (!headId) {
+    if (bodyType === 'monster') {
+      headId = 'head-monster-horns';
+      torsoId = torsoId || 'torso-monster-belly';
+      legsId = legsId || 'legs-paws';
+      skinColorId = avatarConfig.skinColorId || 'mint';
+      clothColorId = avatarConfig.clothColorId || 'emerald';
+    } else {
+      headId = 'head-child-smile';
+      torsoId = torsoId || 'torso-shirt-stripes';
+      legsId = legsId || 'legs-sneaker';
+      skinColorId = avatarConfig.skinColorId || 'fair';
+      clothColorId = avatarConfig.clothColorId || 'sky';
+    }
+  }
+
+  // Derive legacy bodyType for test compatibility
+  const derivedBodyType = bodyType || (headId.includes('monster') ? 'monster' : 'boy');
 
   const skinColors = {
     mint: '#34d399',
@@ -1617,64 +1642,401 @@ export function renderAvatarSvg(avatarConfig = {}, options = {}) {
     blue: '#2563eb'
   };
 
-  const skin = skinColors[skinColorId] || '#34d399';
-  const hair = hairColors[hairColorId] || '#78350f';
+  const clothColors = {
+    sky: '#38bdf8',
+    navy: '#1e3a8a',
+    red: '#dc2626',
+    emerald: '#059669',
+    yellow: '#eab308',
+    purple: '#9333ea',
+    orange: '#ea580c',
+    pink: '#ec4899',
+    slate: '#334155'
+  };
 
+  const skin = skinColors[skinColorId] || '#fcd34d';
+  const hair = hairColors[hairColorId] || '#78350f';
+  const cloth = clothColors[clothColorId] || '#38bdf8';
+
+  // 1. LEGS LAYER (Y: 82 to 116)
+  let legsSvg = '';
+  switch (legsId) {
+    case 'legs-boots-rain':
+      legsSvg = `
+        <rect x="36" y="82" width="8" height="18" fill="#1e293b" />
+        <rect x="56" y="82" width="8" height="18" fill="#1e293b" />
+        <!-- Gummistiefel -->
+        <path d="M 33,96 L 45,96 L 45,112 L 28,112 C 28,106 33,106 33,96 Z" fill="#eab308" stroke="#ca8a04" stroke-width="1.5" />
+        <path d="M 55,96 L 67,96 L 67,112 L 72,112 C 72,106 67,106 67,96 Z" fill="#eab308" stroke="#ca8a04" stroke-width="1.5" />
+        <rect x="28" y="110" width="17" height="3" fill="#854d0e" />
+        <rect x="55" y="110" width="17" height="3" fill="#854d0e" />
+      `;
+      break;
+    case 'legs-paws':
+      legsSvg = `
+        <rect x="35" y="82" width="10" height="16" rx="4" fill="${skin}" />
+        <rect x="55" y="82" width="10" height="16" rx="4" fill="${skin}" />
+        <!-- Tatzen mit Krallen -->
+        <ellipse cx="38" cy="106" rx="10" ry="7" fill="${skin}" stroke="#1e293b" stroke-width="1.2" />
+        <circle cx="32" cy="103" r="2" fill="#ffffff" />
+        <circle cx="38" cy="101" r="2" fill="#ffffff" />
+        <circle cx="44" cy="103" r="2" fill="#ffffff" />
+        <ellipse cx="62" cy="106" rx="10" ry="7" fill="${skin}" stroke="#1e293b" stroke-width="1.2" />
+        <circle cx="56" cy="103" r="2" fill="#ffffff" />
+        <circle cx="62" cy="101" r="2" fill="#ffffff" />
+        <circle cx="68" cy="103" r="2" fill="#ffffff" />
+      `;
+      break;
+    case 'legs-spring':
+      legsSvg = `
+        <!-- Sprungfeder -->
+        <path d="M 50,82 Q 32,88 50,92 Q 68,96 50,100 Q 32,104 50,108 L 50,112" fill="none" stroke="#64748b" stroke-width="5" stroke-linecap="round" />
+        <ellipse cx="50" cy="113" rx="14" ry="4" fill="#334155" />
+      `;
+      break;
+    case 'legs-wheels':
+      legsSvg = `
+        <rect x="38" y="82" width="6" height="14" fill="#64748b" />
+        <rect x="56" y="82" width="6" height="14" fill="#64748b" />
+        <!-- Rollen -->
+        <circle cx="41" cy="104" r="9" fill="#e11d48" stroke="#ffffff" stroke-width="2" />
+        <circle cx="41" cy="104" r="3" fill="#ffffff" />
+        <circle cx="59" cy="104" r="9" fill="#e11d48" stroke="#ffffff" stroke-width="2" />
+        <circle cx="59" cy="104" r="3" fill="#ffffff" />
+      `;
+      break;
+    case 'legs-tracks':
+      legsSvg = `
+        <rect x="47" y="82" width="6" height="10" fill="#475569" />
+        <!-- Raupenkette -->
+        <rect x="25" y="94" width="50" height="18" rx="9" fill="#334155" stroke="#1e293b" stroke-width="2" />
+        <circle cx="34" cy="103" r="6" fill="#94a3b8" />
+        <circle cx="50" cy="103" r="6" fill="#94a3b8" />
+        <circle cx="66" cy="103" r="6" fill="#94a3b8" />
+      `;
+      break;
+    default: // legs-sneaker
+      legsSvg = `
+        <rect x="36" y="82" width="8" height="18" fill="#334155" />
+        <rect x="56" y="82" width="8" height="18" fill="#334155" />
+        <!-- Turnschuhe -->
+        <path d="M 32,100 L 46,100 L 46,112 L 28,112 C 28,106 32,106 32,100 Z" fill="${cloth}" stroke="#ffffff" stroke-width="1.5" />
+        <rect x="26" y="109" width="20" height="4" rx="2" fill="#ffffff" />
+        <path d="M 54,100 L 68,100 L 72,112 L 54,112 C 54,106 58,106 54,100 Z" fill="${cloth}" stroke="#ffffff" stroke-width="1.5" />
+        <rect x="54" y="109" width="20" height="4" rx="2" fill="#ffffff" />
+      `;
+      break;
+  }
+
+  // 2. TORSO LAYER (Y: 54 to 86)
+  let torsoSvg = '';
+  switch (torsoId) {
+    case 'torso-hoodie':
+      torsoSvg = `
+        <path d="M 28,58 L 72,58 L 76,86 L 24,86 Z" fill="${cloth}" rx="4" />
+        <!-- Kängurutasche & Kordel -->
+        <rect x="36" y="70" width="28" height="14" rx="4" fill="#ffffff" opacity="0.3" />
+        <line x1="46" y1="58" x2="46" y2="66" stroke="#ffffff" stroke-width="1.5" />
+        <line x1="54" y1="58" x2="54" y2="66" stroke="#ffffff" stroke-width="1.5" />
+        <!-- Arme -->
+        <rect x="18" y="60" width="10" height="22" rx="5" fill="${cloth}" />
+        <circle cx="23" cy="84" r="4" fill="${skin}" />
+        <rect x="72" y="60" width="10" height="22" rx="5" fill="${cloth}" />
+        <circle cx="77" cy="84" r="4" fill="${skin}" />
+      `;
+      break;
+    case 'torso-monster-belly':
+      torsoSvg = `
+        <!-- Runder Flauschbauch -->
+        <ellipse cx="50" cy="72" rx="26" ry="18" fill="${skin}" />
+        <ellipse cx="50" cy="74" rx="16" ry="11" fill="#ffffff" opacity="0.4" />
+        <!-- Flausch-Pünktchen -->
+        <circle cx="45" cy="72" r="2" fill="${cloth}" />
+        <circle cx="55" cy="75" r="2.5" fill="${cloth}" />
+        <circle cx="48" cy="78" r="1.5" fill="${cloth}" />
+        <!-- Krallenarme -->
+        <path d="M 26,66 Q 16,72 20,82" stroke="${skin}" stroke-width="6" stroke-linecap="round" fill="none" />
+        <path d="M 74,66 Q 84,72 80,82" stroke="${skin}" stroke-width="6" stroke-linecap="round" fill="none" />
+      `;
+      break;
+    case 'torso-robot-chassis':
+      torsoSvg = `
+        <!-- Roboter Chassis -->
+        <rect x="28" y="56" width="44" height="28" rx="5" fill="${cloth}" stroke="#334155" stroke-width="2" />
+        <rect x="34" y="62" width="32" height="16" rx="3" fill="#0f172a" />
+        <circle cx="40" cy="70" r="3" fill="#22c55e" />
+        <circle cx="50" cy="70" r="3" fill="#eab308" />
+        <circle cx="60" cy="70" r="3" fill="#ef4444" />
+        <!-- Metall-Arme -->
+        <rect x="18" y="60" width="10" height="20" rx="3" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
+        <circle cx="23" cy="82" r="4" fill="#e2e8f0" />
+        <rect x="72" y="60" width="10" height="20" rx="3" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
+        <circle cx="77" cy="82" r="4" fill="#e2e8f0" />
+      `;
+      break;
+    case 'torso-vest-adventurer':
+      torsoSvg = `
+        <rect x="30" y="58" width="40" height="26" fill="#f8fafc" />
+        <!-- Entdecker-Weste -->
+        <path d="M 28,58 L 72,58 L 74,86 L 26,86 Z" fill="${cloth}" />
+        <polygon points="50,58 45,86 55,86" fill="#f8fafc" />
+        <rect x="32" y="68" width="10" height="8" rx="2" fill="#ffffff" opacity="0.4" />
+        <rect x="58" y="68" width="10" height="8" rx="2" fill="#ffffff" opacity="0.4" />
+        <!-- Arme -->
+        <rect x="18" y="60" width="10" height="22" rx="5" fill="${skin}" />
+        <rect x="72" y="60" width="10" height="22" rx="5" fill="${skin}" />
+      `;
+      break;
+    case 'torso-dungarees':
+      torsoSvg = `
+        <rect x="30" y="56" width="40" height="16" fill="#ffffff" />
+        <!-- Latzhose -->
+        <rect x="28" y="68" width="44" height="18" rx="4" fill="${cloth}" />
+        <rect x="34" y="60" width="32" height="14" rx="2" fill="${cloth}" />
+        <line x1="36" y1="56" x2="36" y2="68" stroke="${cloth}" stroke-width="4" />
+        <line x1="64" y1="56" x2="64" y2="68" stroke="${cloth}" stroke-width="4" />
+        <circle cx="36" cy="66" r="2" fill="#facc15" />
+        <circle cx="64" cy="66" r="2" fill="#facc15" />
+        <!-- Arme -->
+        <rect x="18" y="60" width="10" height="22" rx="5" fill="${skin}" />
+        <rect x="72" y="60" width="10" height="22" rx="5" fill="${skin}" />
+      `;
+      break;
+    default: // torso-shirt-stripes
+      torsoSvg = `
+        <rect x="28" y="58" width="44" height="26" rx="6" fill="${cloth}" />
+        <!-- Streifen -->
+        <line x1="28" y1="66" x2="72" y2="66" stroke="#ffffff" stroke-width="3" opacity="0.7" />
+        <line x1="28" y1="74" x2="72" y2="74" stroke="#ffffff" stroke-width="3" opacity="0.7" />
+        <!-- Arme -->
+        <rect x="18" y="60" width="10" height="22" rx="5" fill="${cloth}" />
+        <circle cx="23" cy="84" r="4" fill="${skin}" />
+        <rect x="72" y="60" width="10" height="22" rx="5" fill="${cloth}" />
+        <circle cx="77" cy="84" r="4" fill="${skin}" />
+      `;
+      break;
+  }
+
+  // 3. HEAD LAYER (Center cx=50, cy=42, r=20)
+  let headSvg = '';
+  switch (headId) {
+    case 'head-child-freckles':
+      headSvg = `
+        <circle cx="50" cy="42" r="20" fill="${skin}" />
+        <!-- Augen -->
+        <circle cx="43" cy="40" r="3" fill="#1e293b" />
+        <circle cx="57" cy="40" r="3" fill="#1e293b" />
+        <circle cx="44" cy="39" r="1" fill="#ffffff" />
+        <circle cx="58" cy="39" r="1" fill="#ffffff" />
+        <!-- Sommersprossen -->
+        <circle cx="40" cy="46" r="1" fill="#ea580c" />
+        <circle cx="42" cy="48" r="1" fill="#ea580c" />
+        <circle cx="44" cy="46" r="1" fill="#ea580c" />
+        <circle cx="56" cy="46" r="1" fill="#ea580c" />
+        <circle cx="58" cy="48" r="1" fill="#ea580c" />
+        <circle cx="60" cy="46" r="1" fill="#ea580c" />
+        <!-- Lächeln -->
+        <path d="M 45,51 Q 50,56 55,51" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none" />
+      `;
+      break;
+    case 'head-child-glasses':
+      headSvg = `
+        <circle cx="50" cy="42" r="20" fill="${skin}" />
+        <!-- Augen -->
+        <circle cx="43" cy="40" r="3" fill="#1e293b" />
+        <circle cx="57" cy="40" r="3" fill="#1e293b" />
+        <!-- Brille -->
+        <circle cx="43" cy="40" r="7" fill="none" stroke="#0284c7" stroke-width="2.5" />
+        <circle cx="57" cy="40" r="7" fill="none" stroke="#0284c7" stroke-width="2.5" />
+        <line x1="50" y1="40" x2="50" y2="40" stroke="#0284c7" stroke-width="2" />
+        <!-- Lächeln -->
+        <path d="M 45,52 Q 50,56 55,52" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none" />
+      `;
+      break;
+    case 'head-monster-horns':
+      headSvg = `
+        <!-- Hörner -->
+        <path d="M 36,30 Q 24,14 18,18 Q 28,32 34,34" fill="#f59e0b" stroke="#d97706" stroke-width="1.5" />
+        <path d="M 64,30 Q 76,14 82,18 Q 72,32 66,34" fill="#f59e0b" stroke="#d97706" stroke-width="1.5" />
+        <!-- Kopf -->
+        <ellipse cx="50" cy="42" rx="22" ry="19" fill="${skin}" />
+        <circle cx="41" cy="40" r="6" fill="#ffffff" />
+        <circle cx="41" cy="40" r="3" fill="#1e293b" />
+        <circle cx="59" cy="40" r="6" fill="#ffffff" />
+        <circle cx="59" cy="40" r="3" fill="#1e293b" />
+        <!-- Monster-Mund mit Zähnchen -->
+        <path d="M 42,50 Q 50,58 58,50" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none" />
+        <polygon points="46,52 48,56 50,52" fill="#ffffff" />
+      `;
+      break;
+    case 'head-monster-oneeye':
+      headSvg = `
+        <ellipse cx="50" cy="42" rx="22" ry="19" fill="${skin}" />
+        <!-- Flausch-Hörner -->
+        <circle cx="34" cy="24" r="5" fill="${cloth}" />
+        <circle cx="66" cy="24" r="5" fill="${cloth}" />
+        <!-- Riesenauge -->
+        <circle cx="50" cy="38" r="11" fill="#ffffff" stroke="#1e293b" stroke-width="2" />
+        <circle cx="50" cy="38" r="5.5" fill="#9333ea" />
+        <circle cx="50" cy="38" r="3" fill="#1e293b" />
+        <circle cx="52" cy="36" r="1.5" fill="#ffffff" />
+        <path d="M 43,53 Q 50,58 57,53" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none" />
+      `;
+      break;
+    case 'head-robot-screen':
+      headSvg = `
+        <!-- Antenne -->
+        <line x1="50" y1="22" x2="50" y2="12" stroke="#64748b" stroke-width="3" />
+        <circle cx="50" cy="11" r="4" fill="#ef4444" />
+        <!-- Monitor -->
+        <rect x="30" y="22" width="40" height="34" rx="6" fill="${skin}" stroke="#334155" stroke-width="2" />
+        <rect x="34" y="26" width="32" height="26" rx="4" fill="#0f172a" />
+        <!-- LED Gesicht -->
+        <circle cx="43" cy="37" r="3" fill="#38bdf8" />
+        <circle cx="57" cy="37" r="3" fill="#38bdf8" />
+        <path d="M 44,46 L 56,46" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+      `;
+      break;
+    case 'head-bear':
+      headSvg = `
+        <!-- Bärenohren -->
+        <circle cx="33" cy="26" r="8" fill="${skin}" stroke="#1e293b" stroke-width="1.5" />
+        <circle cx="33" cy="26" r="4" fill="#fbcfe8" />
+        <circle cx="67" cy="26" r="8" fill="${skin}" stroke="#1e293b" stroke-width="1.5" />
+        <circle cx="67" cy="26" r="4" fill="#fbcfe8" />
+        <!-- Kopf -->
+        <circle cx="50" cy="42" r="20" fill="${skin}" />
+        <circle cx="42" cy="38" r="2.5" fill="#1e293b" />
+        <circle cx="58" cy="38" r="2.5" fill="#1e293b" />
+        <!-- Schnauze -->
+        <ellipse cx="50" cy="48" rx="8" ry="6" fill="#fef08a" />
+        <polygon points="48,45 52,45 50,48" fill="#1e293b" />
+        <path d="M 50,48 L 50,51" stroke="#1e293b" stroke-width="1.5" />
+      `;
+      break;
+    default: // head-child-smile
+      headSvg = `
+        <circle cx="50" cy="42" r="20" fill="${skin}" />
+        <circle cx="43" cy="40" r="3" fill="#1e293b" />
+        <circle cx="57" cy="40" r="3" fill="#1e293b" />
+        <circle cx="44" cy="39" r="1" fill="#ffffff" />
+        <circle cx="58" cy="39" r="1" fill="#ffffff" />
+        <path d="M 45,51 Q 50,56 55,51" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none" />
+      `;
+      break;
+  }
+
+  // 4. HAIRSTYLE LAYER (for human / compatible heads)
+  let hairSvg = '';
+  if (!headId.includes('robot') && !headId.includes('bear')) {
+    switch (hairStyleId) {
+      case 'spikes':
+        hairSvg = `<path d="M 28,34 L 35,16 L 44,24 L 52,12 L 60,24 L 69,18 L 72,34 Z" fill="${hair}" />`;
+        break;
+      case 'curls':
+        hairSvg = `
+          <g fill="${hair}">
+            <circle cx="34" cy="28" r="8" />
+            <circle cx="45" cy="22" r="9" />
+            <circle cx="56" cy="22" r="9" />
+            <circle cx="66" cy="28" r="8" />
+          </g>
+        `;
+        break;
+      case 'braids':
+        hairSvg = `
+          <path d="M 30,34 Q 50,20 70,34" stroke="${hair}" stroke-width="10" stroke-linecap="round" fill="none" />
+          <rect x="22" y="36" width="7" height="22" rx="3.5" fill="${hair}" />
+          <rect x="71" y="36" width="7" height="22" rx="3.5" fill="${hair}" />
+          <circle cx="25.5" cy="44" r="3" fill="${cloth}" />
+          <circle cx="74.5" cy="44" r="3" fill="${cloth}" />
+        `;
+        break;
+      case 'bob':
+        hairSvg = `
+          <path d="M 28,36 C 28,18 72,18 72,36 L 72,56 L 66,56 L 66,36 Q 50,30 34,36 L 34,56 L 28,56 Z" fill="${hair}" />
+        `;
+        break;
+      default: // tuft
+        hairSvg = `
+          <path d="M 34,32 Q 42,16 50,22 Q 58,14 66,32 Z" fill="${hair}" />
+        `;
+        break;
+    }
+  }
+
+  // 5. ACCESSORIES LAYER
   const accessoriesSvg = accessoryIds.map(accId => {
-    return `<g data-accessory="${accId}">
-      <rect x="25" y="20" width="50" height="15" rx="5" fill="#f59e0b" opacity="0.85" />
-      <circle cx="50" cy="27" r="4" fill="#ffffff" />
-    </g>`;
+    switch (accId) {
+      case 'acc-krone':
+        return `<g data-accessory="acc-krone">
+          <polygon points="36,22 43,12 50,18 57,12 64,22" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+          <circle cx="43" cy="12" r="1.5" fill="#ef4444" />
+          <circle cx="50" cy="18" r="1.5" fill="#3b82f6" />
+          <circle cx="57" cy="12" r="1.5" fill="#10b981" />
+        </g>`;
+      case 'acc-brille':
+        return `<g data-accessory="acc-brille">
+          <rect x="36" y="36" width="12" height="8" rx="2" fill="#1e293b" />
+          <rect x="52" y="36" width="12" height="8" rx="2" fill="#1e293b" />
+          <line x1="48" y1="40" x2="52" y2="40" stroke="#1e293b" stroke-width="2" />
+        </g>`;
+      case 'acc-zauberhut':
+        return `<g data-accessory="acc-zauberhut">
+          <ellipse cx="50" cy="24" rx="22" ry="5" fill="#6b21a8" />
+          <polygon points="36,22 50,-2 64,22" fill="#7e22ce" stroke="#581c87" stroke-width="1" />
+          <text x="50" y="14" font-size="8" fill="#facc15" text-anchor="middle">★</text>
+        </g>`;
+      case 'acc-cape':
+        return `<g data-accessory="acc-cape">
+          <polygon points="26,62 16,102 84,102 74,62" fill="#dc2626" opacity="0.9" />
+        </g>`;
+      case 'acc-kopfhoerer':
+        return `<g data-accessory="acc-kopfhoerer">
+          <path d="M 28,42 C 28,18 72,18 72,42" fill="none" stroke="#0f172a" stroke-width="4" />
+          <rect x="25" y="36" width="6" height="14" rx="3" fill="#3b82f6" />
+          <rect x="69" y="36" width="6" height="14" rx="3" fill="#3b82f6" />
+        </g>`;
+      case 'acc-schal':
+        return `<g data-accessory="acc-schal">
+          <rect x="34" y="54" width="32" height="8" rx="4" fill="#e11d48" />
+          <rect x="54" y="60" width="8" height="16" rx="2" fill="#e11d48" />
+        </g>`;
+      default:
+        return `<g data-accessory="${accId}">
+          <circle cx="70" cy="26" r="5" fill="#f59e0b" />
+        </g>`;
+    }
   }).join('\n');
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100%" height="100%" data-body-type="${bodyType}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100%" height="100%" data-body-type="${derivedBodyType}" data-head-id="${headId}" data-torso-id="${torsoId}" data-legs-id="${legsId}">
   <defs>
     <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15" />
     </filter>
   </defs>
 
-  <!-- Body Layer -->
-  <g id="avatar-body" filter="url(#soft-shadow)">
-    ${bodyType === 'monster' ? `
-      <path d="M 20,95 C 15,60 25,35 50,35 C 75,35 85,60 80,95 Z" fill="${skin}" />
-      <circle cx="40" cy="55" r="9" fill="#ffffff" />
-      <circle cx="40" cy="55" r="4" fill="#1e293b" />
-      <circle cx="60" cy="55" r="9" fill="#ffffff" />
-      <circle cx="60" cy="55" r="4" fill="#1e293b" />
-      <path d="M 42,72 Q 50,80 58,72" stroke="#1e293b" stroke-width="3" stroke-linecap="round" fill="none" />
-      <!-- Monster antennae -->
-      <path d="M 38,35 Q 30,20 25,22" stroke="${skin}" stroke-width="5" stroke-linecap="round" fill="none" />
-      <circle cx="25" cy="22" r="5" fill="${skin}" />
-      <path d="M 62,35 Q 70,20 75,22" stroke="${skin}" stroke-width="5" stroke-linecap="round" fill="none" />
-      <circle cx="75" cy="22" r="5" fill="${skin}" />
-    ` : `
-      <rect x="30" y="80" width="40" height="30" rx="8" fill="#3b82f6" />
-      <circle cx="50" cy="52" r="22" fill="${skin}" />
-      <circle cx="43" cy="50" r="3" fill="#1e293b" />
-      <circle cx="57" cy="50" r="3" fill="#1e293b" />
-      <path d="M 45,63 Q 50,68 55,63" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none" />
-    `}
+  <!-- Bodenschaten -->
+  <ellipse cx="50" cy="116" rx="26" ry="4" fill="#000000" opacity="0.12" />
+
+  <!-- Legs Layer -->
+  <g id="avatar-legs" filter="url(#soft-shadow)">
+    ${legsSvg}
+  </g>
+
+  <!-- Torso Layer -->
+  <g id="avatar-torso" filter="url(#soft-shadow)">
+    ${torsoSvg}
+  </g>
+
+  <!-- Head Layer -->
+  <g id="avatar-head" filter="url(#soft-shadow)">
+    ${headSvg}
   </g>
 
   <!-- Hair Layer -->
-  <g id="avatar-hair" fill="${hair}" data-hair-style="${hairStyleId}">
-    ${hairStyleId === 'spikes' ? `
-      <path d="M 28,42 L 35,22 L 45,30 L 52,18 L 60,30 L 70,24 L 72,42 Z" />
-    ` : hairStyleId === 'curls' ? `
-      <circle cx="34" cy="36" r="9" />
-      <circle cx="50" cy="30" r="11" />
-      <circle cx="66" cy="36" r="9" />
-    ` : hairStyleId === 'braids' ? `
-      <path d="M 30,42 Q 50,28 70,42" stroke="${hair}" stroke-width="12" stroke-linecap="round" fill="none" />
-      <rect x="22" y="44" width="8" height="24" rx="4" />
-      <rect x="70" y="44" width="8" height="24" rx="4" />
-    ` : hairStyleId === 'bob' ? `
-      <path d="M 26,45 C 26,26 74,26 74,45 L 74,65 L 68,65 L 68,44 Q 50,40 32,44 L 32,65 L 26,65 Z" />
-    ` : `
-      <!-- tuft / default -->
-      <path d="M 32,42 Q 40,22 50,28 Q 62,18 68,42 Z" />
-    `}
+  <g id="avatar-hair" data-hair-style="${hairStyleId}">
+    ${hairSvg}
   </g>
 
   <!-- Accessories Layer -->

@@ -8,6 +8,7 @@ import {
 import { speakText, stopSpeech, playTapSound, playSuccessChime, playCorrectionSound, playStarSound } from './core/audio.js';
 import { applyRoundResult, updateAvatar, placeSticker } from './core/progression.js';
 import { redeemParentGoal, fulfillVoucher, cancelVoucher, copyGoalsToAllProfiles } from './core/rewards.js';
+import { AVATAR_CATALOG } from '../content/avatar-catalog.js';
 import '../content/mathe-content.js';
 import '../content/deutsch-content.js';
 
@@ -155,7 +156,7 @@ class LernreiseApp {
           break;
 
         case 'open-profiles':
-          this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'monster' };
+          this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'archetype-child' };
           this.setRoute('profiles');
           break;
 
@@ -168,12 +169,12 @@ class LernreiseApp {
         }
 
         case 'start-create-profile':
-          this.profileUi = { creating: true, draftName: '', draftGrade: 'klasse1', draftBody: 'monster' };
+          this.profileUi = { creating: true, draftName: '', draftGrade: 'klasse1', draftBody: 'archetype-child' };
           this.render();
           break;
 
         case 'cancel-create-profile':
-          this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'monster' };
+          this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'archetype-child' };
           this.render();
           break;
 
@@ -201,15 +202,17 @@ class LernreiseApp {
 
         case 'confirm-create-profile':
           if (this.profileUi.draftName.trim()) {
+            const arch = AVATAR_CATALOG.starterArchetypes.find(a => a.id === this.profileUi.draftBody);
+            const avatarConfig = arch ? { ...arch.preset } : { bodyType: this.profileUi.draftBody || 'monster' };
             this.state = addProfile(this.state, {
               displayName: this.profileUi.draftName.trim(),
               defaultGrade: this.profileUi.draftGrade,
-              avatar: { bodyType: this.profileUi.draftBody }
+              avatar: avatarConfig
             });
             const newProf = this.state.profiles[this.state.profiles.length - 1];
             this.state = setActiveProfile(this.state, newProf.id);
             this.persist();
-            this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'monster' };
+            this.profileUi = { creating: false, draftName: '', draftGrade: 'klasse1', draftBody: 'archetype-child' };
             this.setRoute('hub');
           }
           break;
@@ -430,6 +433,30 @@ class LernreiseApp {
 
         case 'pick-avatar-body':
           this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { bodyType: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'pick-avatar-head':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { headId: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'pick-avatar-torso':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { torsoId: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'pick-avatar-legs':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { legsId: val }));
+          this.persist();
+          this.render();
+          break;
+
+        case 'pick-cloth-color':
+          this.state = updateProfile(this.state, profile.id, (p) => updateAvatar(p, { clothColorId: val }));
           this.persist();
           this.render();
           break;

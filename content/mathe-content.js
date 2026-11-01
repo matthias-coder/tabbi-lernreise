@@ -140,18 +140,35 @@ export function generateMatheStageRound(stageId, options = {}) {
         }
       });
     } else if (stageId === 'mathe-vs-t1-s3') {
-      const num = 1 + ((i * 2 + 1) % 6);
-      tasks.push({
-        id: `${stageId}_${i}`,
-        type: 'choice-cards',
-        promptText: `Zähle die Punkte: Wie viele sind es?`,
-        speechText: `Zähle die Punkte. Wie viele sind es?`,
-        visual: { type: 'dots', count: num, color: '#0284c7' },
-        correctAnswer: num,
-        payload: {
-          choices: makeChoices(num, [num - 1 || 6, num + 1 <= 6 ? num + 1 : 1, 4, 5])
-        }
-      });
+      if (i % 2 === 1) {
+        const top = 1 + (i % 3);
+        const bottom = 1 + ((i + 1) % 3);
+        const sum = top + bottom;
+        tasks.push({
+          id: `${stageId}_${i}`,
+          type: 'choice-cards',
+          promptText: `Würfelturm: Wie viele Punkte haben beide Würfel zusammen?`,
+          speechText: `Zähle die Punkte auf beiden Würfeln zusammen.`,
+          visual: { type: 'wuerfel-turm', top, bottom },
+          correctAnswer: sum,
+          payload: {
+            choices: makeChoices(sum, [sum - 1 || 1, sum + 1 <= 12 ? sum + 1 : 2, 4, 5])
+          }
+        });
+      } else {
+        const num = 1 + ((i * 2 + 1) % 6);
+        tasks.push({
+          id: `${stageId}_${i}`,
+          type: 'choice-cards',
+          promptText: `Zähle die Punkte: Wie viele sind es?`,
+          speechText: `Zähle die Punkte. Wie viele sind es?`,
+          visual: { type: 'dots', count: num, color: '#0284c7' },
+          correctAnswer: num,
+          payload: {
+            choices: makeChoices(num, [num - 1 || 6, num + 1 <= 6 ? num + 1 : 1, 4, 5])
+          }
+        });
+      }
     } else if (stageId === 'mathe-vs-t2-s1') {
       const num = 1 + (i % 5);
       tasks.push({
@@ -180,20 +197,35 @@ export function generateMatheStageRound(stageId, options = {}) {
         }
       });
     } else if (stageId === 'mathe-vs-t2-s3') {
-      const count = 3 + (i % 8); // 3..10
-      const emojis = ['🍎', '⭐', '🎈', '🐞', '🐥', '🐟', '🍓', '🥕'];
-      const emoji = emojis[i % emojis.length];
-      tasks.push({
-        id: `${stageId}_${i}`,
-        type: 'choice-cards',
-        promptText: `Zähle die Objekte: Wie viele sind es?`,
-        speechText: `Zähle die Objekte. Wie viele sind es?`,
-        visual: { type: 'meadow', count, emoji },
-        correctAnswer: count,
-        payload: {
-          choices: makeChoices(count, [count - 1, count + 1, count + 2, 8])
-        }
-      });
+      if (i % 2 === 1) {
+        const count = 2 + (i % 7); // 2..8
+        tasks.push({
+          id: `${stageId}_${i}`,
+          type: 'choice-cards',
+          promptText: `Strichliste: Wie viele Striche sind das?`,
+          speechText: `Zähle die Striche. Ein Päckchen mit Querstrich sind 5.`,
+          visual: { type: 'strichliste', count },
+          correctAnswer: count,
+          payload: {
+            choices: makeChoices(count, [count - 1 || 1, count + 1 <= 10 ? count + 1 : 2, 5, 8])
+          }
+        });
+      } else {
+        const count = 3 + (i % 8); // 3..10
+        const emojis = ['🍎', '⭐', '🎈', '🐞', '🐥', '🐟', '🍓', '🥕'];
+        const emoji = emojis[i % emojis.length];
+        tasks.push({
+          id: `${stageId}_${i}`,
+          type: 'choice-cards',
+          promptText: `Zähle die Objekte: Wie viele sind es?`,
+          speechText: `Zähle die Objekte. Wie viele sind es?`,
+          visual: { type: 'meadow', count, emoji },
+          correctAnswer: count,
+          payload: {
+            choices: makeChoices(count, [count - 1, count + 1, count + 2, 8])
+          }
+        });
+      }
     } else if (stageId === 'mathe-vs-t3-s1') {
       const left = 2 + (i % 4);
       const right = left + 2;
@@ -299,14 +331,35 @@ export function generateMatheStageRound(stageId, options = {}) {
     } else if (stageId === 'mathe-kl1-t2-s1') {
       const a = 1 + (i % 6);
       const b = 1 + ((i * 2) % 4);
-      tasks.push({
-        id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `${a} + ${b} = ?`,
-        speechText: `Wie viel ist ${a} plus ${b}?`,
-        correctAnswer: a + b,
-        payload: { maxDigits: 2 }
-      });
+      if (i >= 4) {
+        const giantA = a + 10;
+        const giantSum = giantA + b;
+        tasks.push({
+          id: `${stageId}_${i}`,
+          type: 'numpad-gap',
+          promptText: `${giantA} + ${b} = ?`,
+          speechText: `Zwergen-Aufgabe: ${a} + ${b} = ${a + b}. Wie viel ist die Riesenaufgabe ${giantA} + ${b}?`,
+          visual: {
+            type: 'zwerg-riese',
+            zwerg: `${a} + ${b} = ${a + b}`,
+            riese: `${giantA} + ${b} = ?`
+          },
+          correctAnswer: giantSum,
+          payload: { maxDigits: 2 }
+        });
+      } else {
+        tasks.push({
+          id: `${stageId}_${i}`,
+          type: 'numpad-gap',
+          promptText: `${a} + ${b} = ?`,
+          speechText: `Wie viel ist ${a} plus ${b}?`,
+          correctAnswer: a + b,
+          payload: {
+            maxDigits: 2,
+            scaffold: { op: '+', a, b }
+          }
+        });
+      }
     } else if (stageId === 'mathe-kl1-t2-s2') {
       const a = 5 + (i % 6);
       const b = 1 + (i % 4);
@@ -316,7 +369,10 @@ export function generateMatheStageRound(stageId, options = {}) {
         promptText: `${a} - ${b} = ?`,
         speechText: `Wie viel ist ${a} minus ${b}?`,
         correctAnswer: a - b,
-        payload: { maxDigits: 2 }
+        payload: {
+          maxDigits: 2,
+          scaffold: { op: '-', a, b }
+        }
       });
     } else if (stageId === 'mathe-kl1-t2-s3') {
       const triples = [

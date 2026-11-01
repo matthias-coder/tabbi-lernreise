@@ -329,6 +329,19 @@ function renderTaskInteraction(task, session, isFeedback) {
               <span class="zimmer-val">${isRightGap ? currentVal : right}</span>
             </div>
           </div>
+
+          ${roof <= 10 ? `
+            <div class="haus-scaffold-strip" title="Zerlege-Hilfe mit roten und blauen Wendepunkten">
+              ${(() => {
+                const known = left !== null ? left : (right !== null ? right : 0);
+                const missing = Math.max(0, roof - known);
+                const dots = [];
+                for (let i = 0; i < known; i++) dots.push('<span class="scaffold-dot dot-blue" title="Gegebene Zahl"></span>');
+                for (let i = 0; i < missing; i++) dots.push('<span class="scaffold-dot dot-red" title="Gesuchte Partnerzahl"></span>');
+                return dots.join('');
+              })()}
+            </div>
+          ` : ''}
         </div>
 
         ${renderOnscreenNumpad(session, isFeedback)}
@@ -442,8 +455,10 @@ function renderTaskInteraction(task, session, isFeedback) {
     case 'numpad-gap': {
       const currentVal = (session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '') ? session.draftInput : '?';
       const hasInput = session.draftInput !== undefined && session.draftInput !== null && session.draftInput !== '';
+      const scaffoldHtml = renderScaffoldDots(task);
       return `
       <div class="numpad-task-container">
+        ${scaffoldHtml}
         <div class="numpad-gap-display">
           <span class="gap-slot ${hasInput ? 'filled' : 'empty'}">
             ${currentVal}
@@ -829,6 +844,20 @@ export function renderTaskVisual(task) {
     </div>`;
   }
 
+  if (v.type === 'wuerfel-turm') {
+    return `
+    <div class="task-visual-box visual-dice-box visual-wuerfel-turm-box">
+      ${renderWuerfelTurmSvg(v.top, v.bottom)}
+    </div>`;
+  }
+
+  if (v.type === 'strichliste') {
+    return `
+    <div class="task-visual-box visual-strichliste-box">
+      ${renderStrichlisteSvg(v.count)}
+    </div>`;
+  }
+
   if (v.type === 'zwerg-riese') {
     return `
     <div class="task-visual-box visual-zwerg-box">
@@ -933,6 +962,91 @@ function renderDiceSvg(count) {
       ${pipElements}
     </svg>
   </div>`;
+}
+
+function renderWuerfelTurmSvg(top = 1, bottom = 1) {
+  return `
+  <div class="wuerfel-turm-tray" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+    ${renderDiceSvg(top)}
+    <span class="turm-plus" style="font-size:1.4rem; font-weight:900; color:#0284c7;">+</span>
+    ${renderDiceSvg(bottom)}
+  </div>`;
+}
+
+function renderStrichlisteSvg(count = 1) {
+  const groups = Math.floor(count / 5);
+  const remainder = count % 5;
+  const groupsHtml = [];
+
+  for (let g = 0; g < groups; g++) {
+    groupsHtml.push(`
+      <svg viewBox="0 0 70 70" width="70" height="70" class="tally-group-svg" style="display:inline-block;" aria-label="5er-Strichbündel">
+        <line x1="16" y1="12" x2="16" y2="58" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round" />
+        <line x1="28" y1="12" x2="28" y2="58" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round" />
+        <line x1="40" y1="12" x2="40" y2="58" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round" />
+        <line x1="52" y1="12" x2="52" y2="58" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round" />
+        <line x1="10" y1="54" x2="58" y2="16" stroke="#dc2626" stroke-width="5" stroke-linecap="round" />
+      </svg>
+    `);
+  }
+
+  if (remainder > 0) {
+    const lines = [];
+    const step = 14;
+    for (let r = 0; r < remainder; r++) {
+      const x = 16 + (r * step);
+      lines.push(`<line x1="${x}" y1="12" x2="${x}" y2="58" stroke="#1e293b" stroke-width="4.5" stroke-linecap="round" />`);
+    }
+    groupsHtml.push(`
+      <svg viewBox="0 0 70 70" width="70" height="70" class="tally-group-svg" style="display:inline-block;" aria-label="${remainder} Striche">
+        ${lines.join('')}
+      </svg>
+    `);
+  }
+
+  return `
+  <div class="strichliste-tray" style="display:inline-flex; gap:12px; background:#ffffff; padding:12px 18px; border-radius:14px; border:2px dashed #cbd5e1; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+    ${groupsHtml.join('')}
+  </div>`;
+}
+
+function renderScaffoldDots(task) {
+  if (!task) return '';
+  let scaffold = task.payload?.scaffold;
+  if (!scaffold && task.promptText) {
+    const match = task.promptText.match(/^(\d+)\s*([\+\-])\s*(\d+)/);
+    if (match) {
+      scaffold = {
+        a: parseInt(match[1], 10),
+        op: match[2],
+        b: parseInt(match[3], 10)
+      };
+    }
+  }
+  if (!scaffold) return '';
+  const { op, a, b } = scaffold;
+  if (op === '+') {
+    const dots = [];
+    for (let i = 0; i < a; i++) dots.push('<span class="scaffold-dot dot-blue" title="1 blau"></span>');
+    for (let i = 0; i < b; i++) dots.push('<span class="scaffold-dot dot-red" title="1 rot"></span>');
+    while (dots.length < 10) dots.push('<span class="scaffold-dot dot-empty"></span>');
+    return `
+    <div class="exercise-scaffold-strip" title="${a} blaue + ${b} rote Plättchen">
+      ${dots.join('')}
+    </div>`;
+  }
+  if (op === '-') {
+    const dots = [];
+    const remaining = Math.max(0, a - b);
+    for (let i = 0; i < remaining; i++) dots.push('<span class="scaffold-dot dot-blue" title="1 blau"></span>');
+    for (let i = 0; i < b; i++) dots.push('<span class="scaffold-dot dot-crossed" title="1 abgezogen"></span>');
+    while (dots.length < 10) dots.push('<span class="scaffold-dot dot-empty"></span>');
+    return `
+    <div class="exercise-scaffold-strip" title="${a} Plättchen minus ${b}">
+      ${dots.join('')}
+    </div>`;
+  }
+  return '';
 }
 
 function renderTwoHands(rightCount) {

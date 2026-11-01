@@ -24,7 +24,11 @@ export function createProfile(input = {}) {
     audioEnabled,
     avatar: {
       bodyType: input.avatar?.bodyType || 'monster',
-      skinColorId: input.avatar?.skinColorId || 'mint',
+      headId: input.avatar?.headId || (input.avatar?.bodyType === 'monster' ? 'head-monster-horns' : 'head-child-smile'),
+      torsoId: input.avatar?.torsoId || (input.avatar?.bodyType === 'monster' ? 'torso-monster-belly' : 'torso-shirt-stripes'),
+      legsId: input.avatar?.legsId || (input.avatar?.bodyType === 'monster' ? 'legs-paws' : 'legs-sneaker'),
+      skinColorId: input.avatar?.skinColorId || (input.avatar?.bodyType === 'monster' ? 'mint' : 'fair'),
+      clothColorId: input.avatar?.clothColorId || (input.avatar?.bodyType === 'monster' ? 'emerald' : 'sky'),
       hairStyleId: input.avatar?.hairStyleId || 'tuft',
       hairColorId: input.avatar?.hairColorId || 'brown',
       accessoryIds: Array.isArray(input.avatar?.accessoryIds) ? [...input.avatar.accessoryIds] : []
