@@ -175,7 +175,7 @@ export function renderExerciseView(session, profile) {
       </div>
 
       ${isFeedback ? `
-        <div class="feedback-banner ${lastResult.isCorrect ? 'banner-correct' : 'banner-wrong'}">
+        <div class="feedback-banner ${lastResult.isCorrect ? 'banner-correct' : 'banner-wrong'}" data-action="next-card" role="button" tabindex="0" title="Antippen zum Weitergehen">
           ${lastResult.isCorrect ? `
             <div class="feedback-message">
               <span class="feedback-icon">🎉</span>

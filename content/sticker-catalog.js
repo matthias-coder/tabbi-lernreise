@@ -15,6 +15,8 @@ const subjects = [
 
 const PAGES = [];
 
+const gradeIcons = { vs: '🧸', kl1: '🎒', kl2: '🚀' };
+
 for (const sub of subjects) {
   for (const grd of grades) {
     const pageStickers = [];
@@ -38,7 +40,7 @@ for (const sub of subjects) {
     }
     PAGES.push({
       id: `page-${sub.code}-${grd.code}`,
-      title: `${sub.title} – ${grd.title}`,
+      title: `${gradeIcons[grd.code]} ${sub.title} ${grd.title}`,
       subjectCode: sub.code,
       gradeCode: grd.code,
       stickers: pageStickers
@@ -63,7 +65,7 @@ const BONUS_STICKERS = [
 
 PAGES.push({
   id: 'page-bonus',
-  title: 'Glitzer-Überraschungen',
+  title: '✨ Glitzer-Überraschungen',
   isBonus: true,
   stickers: BONUS_STICKERS
 });

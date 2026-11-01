@@ -5,7 +5,7 @@ import {
   addProfile, updateProfile, setParentPin, verifyParentPin,
   createMathChallenge, exportBackupJson, importBackupJson
 } from './core/storage.js';
-import { speakText, stopSpeech } from './core/audio.js';
+import { speakText, stopSpeech, playTapSound, playSuccessChime, playCorrectionSound, playStarSound } from './core/audio.js';
 import { applyRoundResult, updateAvatar, placeSticker } from './core/progression.js';
 import { redeemParentGoal, fulfillVoucher, cancelVoucher, copyGoalsToAllProfiles } from './core/rewards.js';
 import '../content/mathe-content.js';
@@ -239,14 +239,22 @@ class LernreiseApp {
 
         case 'select-choice': {
           if (!this.exerciseSession || this.exerciseSession.phase !== 'answering') return;
+          playTapSound(profile.audioEnabled);
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'set-answer', value: val });
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'submit-card' });
+          const lastRes = this.exerciseSession.results[this.exerciseSession.results.length - 1];
+          if (lastRes?.isCorrect) {
+            playSuccessChime(profile.audioEnabled);
+          } else {
+            playCorrectionSound(profile.audioEnabled);
+          }
           this.render();
           break;
         }
 
         case 'numpad-digit': {
           if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'numpad-digit', value: val });
           this.render();
           break;
@@ -254,6 +262,7 @@ class LernreiseApp {
 
         case 'numpad-backspace': {
           if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'numpad-backspace' });
           this.render();
           break;
@@ -261,6 +270,7 @@ class LernreiseApp {
 
         case 'toggle-tile': {
           if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'toggle-tile', value: val });
           this.render();
           break;
@@ -268,20 +278,28 @@ class LernreiseApp {
 
         case 'clear-tiles': {
           if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'numpad-clear' });
           this.render();
           break;
         }
 
         case 'submit-card': {
-          if (!this.exerciseSession) return;
+          if (!this.exerciseSession || this.exerciseSession.phase !== 'answering') return;
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'submit-card' });
+          const lastRes = this.exerciseSession.results[this.exerciseSession.results.length - 1];
+          if (lastRes?.isCorrect) {
+            playSuccessChime(profile.audioEnabled);
+          } else {
+            playCorrectionSound(profile.audioEnabled);
+          }
           this.render();
           break;
         }
 
         case 'next-card': {
           if (!this.exerciseSession) return;
+          playTapSound(profile.audioEnabled);
           this.exerciseSession = applyExerciseAction(this.exerciseSession, { type: 'next-card' });
           if (this.exerciseSession.phase === 'completed') {
             const outcome = applyRoundResult(profile, {
@@ -291,6 +309,7 @@ class LernreiseApp {
             this.state = updateProfile(this.state, profile.id, () => outcome.profile);
             this.persist();
             this.rewardSummary = outcome.summary;
+            playStarSound(profile.audioEnabled);
             this.setRoute('summary');
           } else {
             this.render();

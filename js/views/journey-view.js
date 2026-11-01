@@ -32,10 +32,17 @@ export function renderJourneyView(state, options = {}) {
     <div class="topics-container">
       ${topics.map((topic, tIdx) => {
         const topicStageIds = topic.stages.map(s => s.id);
+        const masteredCount = topic.stages.filter(s => (profile.journeyProgress?.[s.id]?.bestStars || 0) >= 3).length;
+        const topicStars = topic.stages.reduce((sum, s) => sum + (profile.journeyProgress?.[s.id]?.bestStars || 0), 0);
+        const maxTopicStars = topic.stages.length * 5;
+
         return `
         <div class="topic-section">
           <div class="topic-header">
-            <span class="topic-badge">Thema ${tIdx + 1}</span>
+            <div class="topic-header-top">
+              <span class="topic-badge">Thema ${tIdx + 1}</span>
+              <span class="topic-progress-badge">★ ${topicStars}/${maxTopicStars} • ${masteredCount}/${topic.stages.length} gemeistert</span>
+            </div>
             <h3 class="topic-title">${escapeHtml(topic.title)}</h3>
             <p class="topic-desc">${escapeHtml(topic.description)}</p>
           </div>

@@ -11,6 +11,11 @@ export function renderSummaryView(session, rewardSummary = {}, profile = {}) {
 
   return `
   <div class="view-container summary-view">
+    ${stars >= 3 ? `
+      <div class="confetti-shower" aria-hidden="true">
+        ${Array.from({ length: 28 }).map((_, i) => `<span class="confetti-piece p${i % 7}"></span>`).join('')}
+      </div>
+    ` : ''}
     <div class="summary-hero-card">
       <div class="stars-celebration-banner">
         <div class="stars-gold-row">${starsDisplay}</div>
