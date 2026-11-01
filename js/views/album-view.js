@@ -1,4 +1,4 @@
-// Multi-Page Sticker Album with Tap-to-Place Interaction (Zero <input> tags!)
+// Multi-Page Sticker Album with Clustered Touch Tabs & Tap-to-Place Interaction
 
 import { STICKER_CATALOG } from '../../content/sticker-catalog.js';
 import { renderAssetHtml } from '../core/assets.js';
@@ -14,6 +14,40 @@ export function renderAlbumView(profile, pageIndex = 0) {
 
   const chestStars = profile.unlocks?.surpriseProgressStars || 0;
   const chestProgressPct = (chestStars / SURPRISE_THRESHOLD_STARS) * 100;
+
+  const mathePages = pages.map((p, idx) => ({ p, idx })).filter(item => item.p.subjectCode === 'mathe');
+  const deutschPages = pages.map((p, idx) => ({ p, idx })).filter(item => item.p.subjectCode === 'deutsch');
+  const bonusPages = pages.map((p, idx) => ({ p, idx })).filter(item => item.p.isBonus);
+
+  function renderPageButton(item) {
+    const { p, idx } = item;
+    const isPlaced = (s) => placedStickers.has(s.id);
+    const isUnlocked = (s) => unlockedStickers.has(s.id);
+
+    const placedCount = p.stickers.filter(isPlaced).length;
+    const totalCount = p.stickers.length;
+    const unplacedCount = p.stickers.filter(s => isUnlocked(s) && !isPlaced(s)).length;
+
+    const isActive = idx === safeIdx;
+    const isMathe = p.subjectCode === 'mathe';
+    const isDeutsch = p.subjectCode === 'deutsch';
+    const subClass = isMathe ? 'tab-mathe' : isDeutsch ? 'tab-deutsch' : 'tab-bonus';
+
+    const gradeLabel = p.gradeCode === 'vs'
+      ? '🧸 Vorschule'
+      : p.gradeCode === 'kl1'
+      ? '🎒 1. Klasse'
+      : p.gradeCode === 'kl2'
+      ? '🚀 2. Klasse'
+      : '🎁 Glitzer-Kiste';
+
+    return `
+    <button type="button" class="btn-touch album-page-tab ${subClass} ${isActive ? 'active' : ''} ${unplacedCount > 0 ? 'has-unplaced' : ''}" data-action="switch-album-page" data-page-index="${idx}">
+      <span class="tab-title">${escapeHtml(gradeLabel)}</span>
+      <span class="tab-count-pill">${placedCount}/${totalCount}</span>
+      ${unplacedCount > 0 ? `<span class="tab-sparkle-badge" title="${unplacedCount} Sticker bereit!">✨ ${unplacedCount}</span>` : ''}
+    </button>`;
+  }
 
   return `
   <div class="view-container album-view">
@@ -35,13 +69,37 @@ export function renderAlbumView(profile, pageIndex = 0) {
         </div>
       </div>
 
-      <!-- Album Pages Tabs -->
-      <div class="album-pages-tabs">
-        ${pages.map((p, idx) => `
-          <button type="button" class="btn-touch album-page-tab ${idx === safeIdx ? 'active' : ''}" data-action="switch-album-page" data-page-index="${idx}">
-            ${escapeHtml(p.title)}
-          </button>
-        `).join('')}
+      <!-- Album Pages Clusters: Mathe, Deutsch & Bonus -->
+      <div class="album-tabs-section">
+        <div class="album-tabs-cluster cluster-mathe">
+          <div class="cluster-label">
+            <span class="cluster-icon">🔢</span>
+            <strong>Mathe</strong>
+          </div>
+          <div class="cluster-buttons">
+            ${mathePages.map(renderPageButton).join('')}
+          </div>
+        </div>
+
+        <div class="album-tabs-cluster cluster-deutsch">
+          <div class="cluster-label">
+            <span class="cluster-icon">📖</span>
+            <strong>Deutsch</strong>
+          </div>
+          <div class="cluster-buttons">
+            ${deutschPages.map(renderPageButton).join('')}
+          </div>
+        </div>
+
+        <div class="album-tabs-cluster cluster-bonus">
+          <div class="cluster-label">
+            <span class="cluster-icon">✨</span>
+            <strong>Bonus</strong>
+          </div>
+          <div class="cluster-buttons">
+            ${bonusPages.map(renderPageButton).join('')}
+          </div>
+        </div>
       </div>
 
       <!-- Stickers Grid on Current Page -->
