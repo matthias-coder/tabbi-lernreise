@@ -219,7 +219,6 @@ test('worksheet theming renders authentic Rechenheft background/stamp for Mathe 
   const matheHtml = renderExerciseView(sMathe, profile);
   assert.ok(matheHtml.includes('exercise-view-mathe'));
   assert.ok(matheHtml.includes('task-card-mathe'));
-  assert.ok(matheHtml.includes('rechenheft-stamp.svg'));
   assert.ok(matheHtml.includes('sheet-paper-margin') && matheHtml.includes('binder-hole'));
 
   // Deutsch stage
@@ -227,6 +226,5 @@ test('worksheet theming renders authentic Rechenheft background/stamp for Mathe 
   const deutschHtml = renderExerciseView(sDeutsch, profile);
   assert.ok(deutschHtml.includes('exercise-view-deutsch'));
   assert.ok(deutschHtml.includes('task-card-deutsch'));
-  assert.ok(deutschHtml.includes('schreibheft-stamp.svg'));
   assert.ok(deutschHtml.includes('tintenfleck-corner.svg') && deutschHtml.includes('tintenfleck.svg'));
 });

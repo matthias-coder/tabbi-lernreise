@@ -2,7 +2,7 @@
   <defs>
     <!-- 5mm Rechenheft-Kästchen (Kariertes Papier) -->
     <pattern id="rechenkaestchen" width="24" height="24" patternUnits="userSpaceOnUse">
-      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#bfdbfe" stroke-width="0.85" opacity="0.65" />
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#93c5fd" stroke-width="1.2" opacity="0.85" />
     </pattern>
 
     <!-- Weicher Graphit-Bleistift-Effekt & Tinten -->

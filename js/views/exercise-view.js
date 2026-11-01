@@ -229,11 +229,6 @@ export function renderExerciseView(session, profile) {
         <div class="binder-hole hole-bottom"></div>
       </div>
 
-      <!-- Sheet Paper Header Stamp -->
-      <div class="sheet-header-stamp" aria-hidden="true">
-        <img src="assets/ui/${isMathe ? 'rechenheft-stamp.svg' : 'schreibheft-stamp.svg'}" alt="" class="sheet-stamp-img" />
-      </div>
-
       ${isDeutsch ? `
         <!-- Ink Blotches for German Worksheet (Tintenflecken) -->
         <div class="tintenfleck-wrap tintenfleck-corner" aria-hidden="true">

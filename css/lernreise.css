@@ -772,14 +772,14 @@ body {
 .exercise-view-mathe {
   background-color: #fdfcf7;
   background-image:
-    linear-gradient(rgba(253, 252, 247, 0.42), rgba(253, 252, 247, 0.42)),
+    linear-gradient(rgba(253, 252, 247, 0.18), rgba(253, 252, 247, 0.18)),
     url('../assets/ui/rechenheft-hintergrund.svg');
 }
 
 .exercise-view-deutsch {
   background-color: #fdfcf7;
   background-image:
-    linear-gradient(rgba(253, 252, 247, 0.42), rgba(253, 252, 247, 0.42)),
+    linear-gradient(rgba(253, 252, 247, 0.18), rgba(253, 252, 247, 0.18)),
     url('../assets/ui/schulheft-hintergrund.svg');
 }
 
@@ -797,15 +797,15 @@ body {
   overflow: hidden;
 }
 
-/* 1. Mathe Worksheet Card (Rechenheft-Kästchen 5mm / 24px + Roter Heftrand) */
+/* 1. Mathe Worksheet Card (Rechenheft-Kästchen 5mm / 24px + Roter Heftrand - klar sichtbar) */
 .task-card-mathe {
   background-color: #ffffff;
   background-image:
-    linear-gradient(rgba(219, 234, 254, 0.55) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(219, 234, 254, 0.55) 1px, transparent 1px);
+    linear-gradient(rgba(147, 197, 253, 0.85) 1.2px, transparent 1.2px),
+    linear-gradient(90deg, rgba(147, 197, 253, 0.85) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
-  border-left: 8px solid #f87171; /* Roter Korrektur-/Heftrand */
-  box-shadow: 0 14px 34px -5px rgba(2, 132, 199, 0.08), 0 6px 12px -2px rgba(15, 23, 42, 0.04);
+  border-left: 10px solid #ef4444; /* Roter Korrektur-/Heftrand */
+  box-shadow: 0 14px 34px -5px rgba(2, 132, 199, 0.12), 0 6px 12px -2px rgba(15, 23, 42, 0.04);
 }
 
 .task-card-mathe::before {
@@ -813,35 +813,41 @@ body {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 20px;
+  left: 28px;
   width: 2px;
-  background: rgba(248, 113, 113, 0.35);
+  background: rgba(239, 68, 68, 0.65);
   pointer-events: none;
   z-index: 1;
 }
 
-/* 2. Deutsch Worksheet Card (Schreibheft-Lineatur 1. Klasse + Tintenflecken) */
+/* 2. Deutsch Worksheet Card (Schreibheft-Lineatur 1. Klasse + Tintenflecken - klar sichtbar) */
 .task-card-deutsch {
-  background-color: #fffefb;
+  background-color: #fdfcf7;
   background-image:
     repeating-linear-gradient(
       to bottom,
       transparent 0px,
-      transparent 11px,
-      rgba(199, 210, 254, 0.35) 12px,
       transparent 13px,
-      transparent 23px,
-      rgba(129, 140, 248, 0.40) 24px,
-      transparent 25px,
-      transparent 35px,
-      rgba(99, 102, 241, 0.55) 36px,
-      transparent 37px,
-      transparent 47px,
-      rgba(199, 210, 254, 0.35) 48px
+      #93c5fd 14px,
+      #93c5fd 15px,
+      transparent 15px,
+      transparent 27px,
+      #93c5fd 28px,
+      #93c5fd 29px,
+      transparent 29px,
+      transparent 41px,
+      #2563eb 42px,
+      #2563eb 44px,
+      transparent 44px,
+      transparent 56px,
+      #93c5fd 57px,
+      #93c5fd 58px,
+      transparent 58px,
+      transparent 72px
     );
-  background-size: 100% 48px;
-  border-left: 8px solid #f87171; /* Roter Heftrand */
-  box-shadow: 0 14px 34px -5px rgba(99, 102, 241, 0.08), 0 6px 12px -2px rgba(15, 23, 42, 0.04);
+  background-size: 100% 72px;
+  border-left: 10px solid #ef4444; /* Roter Korrektur-/Heftrand */
+  box-shadow: 0 14px 34px -5px rgba(220, 38, 38, 0.12), 0 6px 12px -2px rgba(15, 23, 42, 0.04);
 }
 
 .task-card-deutsch::before {
@@ -849,9 +855,9 @@ body {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 20px;
+  left: 28px;
   width: 2px;
-  background: rgba(248, 113, 113, 0.35);
+  background: rgba(239, 68, 68, 0.65);
   pointer-events: none;
   z-index: 1;
 }
@@ -877,23 +883,6 @@ body {
   background: #f1f5f9;
   border: 1.5px solid #cbd5e1;
   box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Sheet Header Stamp */
-.sheet-header-stamp {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.88;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.04));
-}
-
-.sheet-stamp-img {
-  width: 110px;
-  height: auto;
-  display: block;
 }
 
 /* Tintenflecken Decorations (authentic royal blue fountain pen ink) */

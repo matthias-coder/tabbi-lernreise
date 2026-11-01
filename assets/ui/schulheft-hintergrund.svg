@@ -3,9 +3,9 @@
     <!-- Grundschul-Lineatur (Linierte Blätter mit Hilfslinie) -->
     <pattern id="lineatur" width="900" height="36" patternUnits="userSpaceOnUse">
       <!-- Gestrichelte Mittellinie (Schreibhilfe 1. Klasse) -->
-      <line x1="0" y1="18" x2="900" y2="18" stroke="#dbeafe" stroke-width="1" stroke-dasharray="5,5" />
+      <line x1="0" y1="18" x2="900" y2="18" stroke="#93c5fd" stroke-width="1.3" stroke-dasharray="6,4" />
       <!-- Durchgezogene Haupt-Schreiblinie -->
-      <line x1="0" y1="35.5" x2="900" y2="35.5" stroke="#bfdbfe" stroke-width="1.35" />
+      <line x1="0" y1="35.5" x2="900" y2="35.5" stroke="#3b82f6" stroke-width="1.6" opacity="0.8" />
     </pattern>
 
     <!-- Weicher Graphit-Bleistift-Effekt -->
