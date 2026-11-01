@@ -56,10 +56,6 @@ class LernreiseApp {
     if (screen === 'exercise' && params.stageId) {
       if (!this.exerciseSession || this.exerciseSession.stageId !== params.stageId) {
         this.exerciseSession = createExerciseSession(params.stageId);
-        const profile = getActiveProfile(this.state);
-        if (profile.audioEnabled && this.exerciseSession.tasks[0]) {
-          speakText(this.exerciseSession.tasks[0].speechText);
-        }
       }
     }
 
@@ -297,9 +293,6 @@ class LernreiseApp {
             this.rewardSummary = outcome.summary;
             this.setRoute('summary');
           } else {
-            if (profile.audioEnabled && this.exerciseSession.tasks[this.exerciseSession.currentIndex]) {
-              speakText(this.exerciseSession.tasks[this.exerciseSession.currentIndex].speechText);
-            }
             this.render();
           }
           break;

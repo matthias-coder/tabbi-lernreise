@@ -235,48 +235,52 @@ export function generateMatheStageRound(stageId, options = {}) {
       const roof = 5;
       const left = i % 5;
       const right = roof - left;
+      const gapSide = (i % 2 === 0) ? 'right' : 'left';
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Zahlenhaus 5: ${left} + ? = 5`,
-        speechText: `Im Zahlenhaus 5: Wie viel fehlt zu ${left}, damit es 5 wird?`,
-        correctAnswer: right,
+        type: 'zahlenhaus',
+        promptText: `Zahlenhaus 5: Welche Zahl fehlt in der Wohnung?`,
+        speechText: `Im Zahlenhaus 5: Welche Zahl gehört in das leere Zimmer?`,
+        correctAnswer: gapSide === 'right' ? right : left,
         payload: {
           roof,
-          left,
-          gap: 'right',
+          left: gapSide === 'right' ? left : null,
+          right: gapSide === 'right' ? null : right,
           maxDigits: 2
         }
       });
     } else if (stageId === 'mathe-kl1-t1-s2') {
-      const roof = 8 + (i % 3); // 8, 9, 10
-      const left = 2 + (i % 6);
+      const roofs = [6, 7, 8, 9, 10, 8, 7, 10];
+      const roof = roofs[i % roofs.length];
+      const left = 1 + (i % (roof - 1));
       const right = roof - left;
+      const gapSide = (i % 2 === 0) ? 'right' : 'left';
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Zahlenhaus ${roof}: ${left} + ? = ${roof}`,
-        speechText: `Im Zahlenhaus ${roof}: ${left} plus wie viel ist ${roof}?`,
-        correctAnswer: right,
+        type: 'zahlenhaus',
+        promptText: `Zahlenhaus ${roof}: Welche Zahl fehlt im Zimmer?`,
+        speechText: `Im Zahlenhaus ${roof}: Welche Zahl gehört in das freie Zimmer?`,
+        correctAnswer: gapSide === 'right' ? right : left,
         payload: {
           roof,
-          left,
-          gap: 'right',
+          left: gapSide === 'right' ? left : null,
+          right: gapSide === 'right' ? null : right,
           maxDigits: 2
         }
       });
     } else if (stageId === 'mathe-kl1-t1-s3') {
-      const left = 1 + (i % 9);
-      const right = 10 - left;
+      const blueCount = 1 + (i % 9);
+      const redCount = 10 - blueCount;
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Verliebte Zahl zur 10: ${left} + ? = 10`,
-        speechText: `Welche verliebte Zahl gehört zu ${left}, um zusammen 10 zu sein?`,
-        correctAnswer: right,
+        type: 'zehnerstreifen',
+        promptText: `Zehnerstreifen: ${blueCount} blaue Plättchen. Wie viele rote Plättchen fehlen bis 10?`,
+        speechText: `Auf dem Zehnerstreifen liegen ${blueCount} blaue Plättchen. Wie viele rote Plättchen fehlen bis 10?`,
+        correctAnswer: redCount,
         payload: {
-          left,
-          sum: 10,
+          blueCount,
+          redCount,
+          target: 10,
           maxDigits: 2
         }
       });
@@ -315,14 +319,19 @@ export function generateMatheStageRound(stageId, options = {}) {
         payload: { maxDigits: 2 }
       });
     } else if (stageId === 'mathe-kl1-t3-s1') {
-      const n = 11 + (i % 8);
+      const center = 11 + (i % 8);
+      const askPrev = (i % 2 === 0);
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Nachfolger von ${n}: Was kommt nach ${n}?`,
-        speechText: `Welche Zahl ist der Nachfolger von ${n}?`,
-        correctAnswer: n + 1,
-        payload: { maxDigits: 2 }
+        type: 'nachbarzahlen',
+        promptText: askPrev ? `Finde den Vorgänger von ${center}:` : `Finde den Nachfolger von ${center}:`,
+        speechText: askPrev ? `Welche Zahl kommt vor ${center}?` : `Welche Zahl kommt nach ${center}?`,
+        correctAnswer: askPrev ? center - 1 : center + 1,
+        payload: {
+          centerNumber: center,
+          gap: askPrev ? 'prev' : 'next',
+          maxDigits: 2
+        }
       });
     } else if (stageId === 'mathe-kl1-t3-s2') {
       const start = 10 + (i % 6);
@@ -337,15 +346,27 @@ export function generateMatheStageRound(stageId, options = {}) {
         }
       });
     } else if (stageId === 'mathe-kl1-t3-s3') {
-      const base1 = 2 + (i % 4);
-      const base2 = 3 + (i % 3);
+      const b1 = 1 + (i % 3);
+      const b2 = 2 + ((i * 2) % 3);
+      const b3 = 1 + ((i * 3) % 4);
+      const m1 = b1 + b2;
+      const m2 = b2 + b3;
+      const top = m1 + m2;
+      const gap = i % 3 === 0 ? 'top' : (i % 3 === 1 ? 'mid-left' : 'mid-right');
+      const correctAnswer = gap === 'top' ? top : (gap === 'mid-left' ? m1 : m2);
       tasks.push({
         id: `${stageId}_${i}`,
-        type: 'numpad-gap',
-        promptText: `Zahlenmauer: Mauerstein oben über ${base1} und ${base2} = ?`,
-        speechText: `Auf der Zahlenmauer: Wie viel ergibt ${base1} plus ${base2}?`,
-        correctAnswer: base1 + base2,
-        payload: { maxDigits: 2 }
+        type: 'zahlenmauer',
+        promptText: `Zahlenmauer: Rechne die Mauersteine nach oben zusammen!`,
+        speechText: `Auf der Zahlenmauer: Welcher Stein fehlt?`,
+        correctAnswer,
+        payload: {
+          base: [b1, b2, b3],
+          mid: [gap === 'mid-left' ? null : m1, gap === 'mid-right' ? null : m2],
+          top: gap === 'top' ? null : top,
+          gap,
+          maxDigits: 2
+        }
       });
     }
 

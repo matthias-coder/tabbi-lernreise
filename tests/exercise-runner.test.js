@@ -56,3 +56,32 @@ test('numpad-gap backspace, tile-builder toggle, and sequence-order reset work d
   sNum = applyExerciseAction(sNum, { type: 'numpad-clear' });
   assert.equal(sNum.draftInput, '');
 });
+
+test('zahlenhaus, zahlenmauer, zehnerstreifen, and nachbarzahlen render authentic visual components with visible OK numpad button', () => {
+  const profile = getActiveProfile(createInitialState());
+
+  // 1. Zahlenhaus (mathe-kl1-t1-s1)
+  const sHaus = createExerciseSession('mathe-kl1-t1-s1');
+  assert.equal(sHaus.tasks[0].type, 'zahlenhaus');
+  const hausHtml = renderExerciseView(sHaus, profile);
+  assert.ok(hausHtml.includes('zahlenhaus-toy') && hausHtml.includes('dach-badge-window') && hausHtml.includes('haus-body'));
+  assert.ok(hausHtml.includes('numpad-submit-btn') && !hausHtml.toLowerCase().includes('<input'));
+
+  // 2. Zahlenmauer (mathe-kl1-t3-s3)
+  const sMauer = createExerciseSession('mathe-kl1-t3-s3');
+  assert.equal(sMauer.tasks[0].type, 'zahlenmauer');
+  const mauerHtml = renderExerciseView(sMauer, profile);
+  assert.ok(mauerHtml.includes('zahlenmauer-pyramid') && mauerHtml.includes('mauer-brick'));
+
+  // 3. Zehnerstreifen (mathe-kl1-t1-s3)
+  const sStreifen = createExerciseSession('mathe-kl1-t1-s3');
+  assert.equal(sStreifen.tasks[0].type, 'zehnerstreifen');
+  const streifenHtml = renderExerciseView(sStreifen, profile);
+  assert.ok(streifenHtml.includes('zehnerstreifen-toy') && streifenHtml.includes('fuenfer-pack'));
+
+  // 4. Nachbarzahlen (mathe-kl1-t3-s1)
+  const sNachbar = createExerciseSession('mathe-kl1-t3-s1');
+  assert.equal(sNachbar.tasks[0].type, 'nachbarzahlen');
+  const nachbarHtml = renderExerciseView(sNachbar, profile);
+  assert.ok(nachbarHtml.includes('nachbar-trio-card') && nachbarHtml.includes('nachbar-box'));
+});

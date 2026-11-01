@@ -166,8 +166,8 @@ export function generateDeutschStageRound(stageId, options = {}) {
       tasks.push({
         id: `${stageId}_${i}`,
         type: 'choice-cards',
-        promptText: `Wo hörst du am Anfang dasselbe wie bei MAUS?`,
-        speechText: `Wo hörst du am Anfang denselben Laut wie bei Maus?`,
+        promptText: `Welches Bild beginnt wie MAUS mit M?`,
+        speechText: `Welches Bild beginnt mit demselben Laut wie Maus?`,
         visual: { assetId: 'card-maus' },
         correctAnswer: 'Mond',
         payload: {

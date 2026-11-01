@@ -15,7 +15,7 @@ function generateId(prefix = 'p') {
 
 export function createProfile(input = {}) {
   const defaultGrade = input.defaultGrade || 'klasse1';
-  const audioEnabled = input.audioEnabled !== undefined ? Boolean(input.audioEnabled) : defaultGrade === 'vorschule';
+  const audioEnabled = input.audioEnabled !== undefined ? Boolean(input.audioEnabled) : false;
 
   return {
     id: input.id || generateId('prof'),

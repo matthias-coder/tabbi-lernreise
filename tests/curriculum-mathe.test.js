@@ -29,7 +29,10 @@ test('every Mathe stage generates 8 unambiguous, age-safe, solvable tasks across
         const tasks = generateStageRound(stageId);
         assert.equal(tasks.length, 8);
         for (const task of tasks) {
-          assert.ok(['choice-cards', 'numpad-gap', 'tile-builder', 'sequence-order'].includes(task.type));
+          assert.ok([
+            'choice-cards', 'numpad-gap', 'tile-builder', 'sequence-order',
+            'zahlenhaus', 'zahlenmauer', 'zehnerstreifen', 'nachbarzahlen'
+          ].includes(task.type), `unexpected task type ${task.type} in ${stageId}`);
           assert.ok(task.promptText.length > 3 && task.speechText.length > 3);
           if (task.type === 'choice-cards') {
             const values = task.payload.choices.map((c) => String(c.value));

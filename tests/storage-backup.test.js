@@ -8,7 +8,7 @@ import {
   exportBackupJson, importBackupJson
 } from '../js/core/storage.js';
 
-test('initial state creates default profile with 3 starter parent goals and audio auto-enabled for vorschule', () => {
+test('initial state creates default profile with 3 starter parent goals and audio disabled by default', () => {
   const s = createInitialState();
   const p = getActiveProfile(s);
   assert.equal(s.schemaVersion, 1);
@@ -16,7 +16,7 @@ test('initial state creates default profile with 3 starter parent goals and audi
   assert.deepEqual(p.parentGoals.map((g) => g.costCoins), [30, 60, 150]);
   const s2 = addProfile(s, { displayName: 'Mini', defaultGrade: 'vorschule' });
   const vs = s2.profiles.find((x) => x.displayName === 'Mini');
-  assert.equal(vs.audioEnabled, true);
+  assert.equal(vs.audioEnabled, false);
 });
 
 test('multi-profile switching and deletion never leaves zero profiles', () => {

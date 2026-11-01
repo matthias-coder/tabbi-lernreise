@@ -221,6 +221,150 @@ function renderTaskInteraction(task, session, isFeedback) {
       </div>`;
     }
 
+    case 'zahlenhaus': {
+      const { roof, left, right } = task.payload;
+      const isLeftGap = left === null;
+      const isRightGap = right === null;
+      const currentVal = session.draftInput || '?';
+
+      return `
+      <div class="interactive-zahlenhaus-stage">
+        <div class="zahlenhaus-toy">
+          <div class="dach-wrapper">
+            <svg class="dach-shape-svg" viewBox="0 0 200 90" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="dachGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f87171" />
+                  <stop offset="100%" stop-color="#dc2626" />
+                </linearGradient>
+              </defs>
+              <polygon points="100,6 194,84 6,84" fill="url(#dachGrad)" stroke="#991b1b" stroke-width="4" stroke-linejoin="round" />
+            </svg>
+            <div class="dach-badge-window">
+              <span class="dach-label">Ziel:</span>
+              <strong class="dach-number">${roof}</strong>
+            </div>
+          </div>
+
+          <div class="haus-body">
+            <div class="zimmer zimmer-left ${isLeftGap ? 'zimmer-gap active' : 'zimmer-given'}">
+              <span class="zimmer-val">${isLeftGap ? currentVal : left}</span>
+            </div>
+            <div class="zimmer-divider"></div>
+            <div class="zimmer zimmer-right ${isRightGap ? 'zimmer-gap active' : 'zimmer-given'}">
+              <span class="zimmer-val">${isRightGap ? currentVal : right}</span>
+            </div>
+          </div>
+        </div>
+
+        ${renderOnscreenNumpad(session, isFeedback)}
+      </div>`;
+    }
+
+    case 'zahlenmauer': {
+      const { base, mid, top, gap } = task.payload;
+      const currentVal = session.draftInput || '?';
+
+      return `
+      <div class="interactive-zahlenmauer-stage">
+        <div class="zahlenmauer-pyramid">
+          <div class="mauer-tier tier-top">
+            <div class="mauer-brick ${gap === 'top' ? 'brick-gap active' : 'brick-given'}">
+              <span class="brick-val">${gap === 'top' ? currentVal : top}</span>
+            </div>
+          </div>
+
+          <div class="mauer-tier tier-mid">
+            <div class="mauer-brick ${gap === 'mid-left' ? 'brick-gap active' : 'brick-given'}">
+              <span class="brick-val">${gap === 'mid-left' ? currentVal : mid[0]}</span>
+            </div>
+            <div class="mauer-brick ${gap === 'mid-right' ? 'brick-gap active' : 'brick-given'}">
+              <span class="brick-val">${gap === 'mid-right' ? currentVal : mid[1]}</span>
+            </div>
+          </div>
+
+          <div class="mauer-tier tier-base">
+            <div class="mauer-brick ${gap === 'base-0' ? 'brick-gap active' : 'brick-given'}">
+              <span class="brick-val">${gap === 'base-0' ? currentVal : base[0]}</span>
+            </div>
+            <div class="mauer-brick ${gap === 'base-1' ? 'brick-gap active' : 'brick-given'}">
+              <span class="brick-val">${gap === 'base-1' ? currentVal : base[1]}</span>
+            </div>
+            <div class="mauer-brick ${gap === 'base-2' ? 'brick-gap active' : 'brick-given'}">
+              <span class="brick-val">${gap === 'base-2' ? currentVal : base[2]}</span>
+            </div>
+          </div>
+        </div>
+
+        ${renderOnscreenNumpad(session, isFeedback)}
+      </div>`;
+    }
+
+    case 'zehnerstreifen': {
+      const { blueCount = 0, redCount = 0 } = task.payload;
+      const currentVal = session.draftInput || '?';
+
+      const circles = [];
+      for (let i = 0; i < 10; i++) {
+        let colorClass = 'empty';
+        if (i < blueCount) colorClass = 'token-blue';
+        else if (i < blueCount + redCount) colorClass = 'token-red';
+        circles.push(`<span class="token-circle ${colorClass}"></span>`);
+      }
+
+      return `
+      <div class="interactive-zehnerstreifen-stage">
+        <div class="zehnerstreifen-toy">
+          <div class="fuenfer-pack">${circles.slice(0, 5).join('')}</div>
+          <div class="zehner-separator"></div>
+          <div class="fuenfer-pack">${circles.slice(5, 10).join('')}</div>
+        </div>
+
+        <div class="streifen-gap-display">
+          <span>Deine Antwort:</span>
+          <span class="gap-slot filled">${currentVal}</span>
+        </div>
+
+        ${renderOnscreenNumpad(session, isFeedback)}
+      </div>`;
+    }
+
+    case 'nachbarzahlen': {
+      const { centerNumber, gap, leftHeader = 'Vorgänger (-1)', centerHeader = 'Zahl', rightHeader = 'Nachfolger (+1)', fixedLeft, fixedRight } = task.payload;
+      const currentVal = session.draftInput || '?';
+      const isPrevGap = gap === 'prev';
+      const prevVal = isPrevGap ? currentVal : (fixedLeft !== undefined ? fixedLeft : centerNumber - 1);
+      const nextVal = !isPrevGap ? currentVal : (fixedRight !== undefined ? fixedRight : centerNumber + 1);
+
+      return `
+      <div class="interactive-nachbar-stage">
+        <div class="nachbar-trio-card">
+          <div class="nachbar-column col-prev">
+            <span class="nachbar-col-label">${escapeHtml(leftHeader)}</span>
+            <div class="nachbar-box ${isPrevGap ? 'box-gap active' : 'box-given'}">
+              <span class="box-val">${prevVal}</span>
+            </div>
+          </div>
+
+          <div class="nachbar-column col-center">
+            <span class="nachbar-col-label">${escapeHtml(centerHeader)}</span>
+            <div class="nachbar-box box-center-given">
+              <span class="box-val">${centerNumber}</span>
+            </div>
+          </div>
+
+          <div class="nachbar-column col-next">
+            <span class="nachbar-col-label">${escapeHtml(rightHeader)}</span>
+            <div class="nachbar-box ${!isPrevGap ? 'box-gap active' : 'box-given'}">
+              <span class="box-val">${nextVal}</span>
+            </div>
+          </div>
+        </div>
+
+        ${renderOnscreenNumpad(session, isFeedback)}
+      </div>`;
+    }
+
     case 'numpad-gap': {
       return `
       <div class="numpad-task-container">
@@ -230,17 +374,7 @@ function renderTaskInteraction(task, session, isFeedback) {
           </span>
         </div>
 
-        <div class="onscreen-numpad">
-          ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(digit => `
-            <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="${digit}">
-              ${digit}
-            </button>
-          `).join('')}
-          <button type="button" class="btn-touch numpad-action-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-backspace" title="Löschen">⌫</button>
-          <button type="button" class="btn-touch numpad-submit-btn btn-primary ${isFeedback || !session.draftInput ? 'disabled' : ''}" data-action="submit-card">
-            OK ✓
-          </button>
-        </div>
+        ${renderOnscreenNumpad(session, isFeedback)}
       </div>`;
     }
 
@@ -301,6 +435,30 @@ function renderTaskInteraction(task, session, isFeedback) {
     default:
       return `<div class="unknown-task-type">Aufgabentyp wird geladen…</div>`;
   }
+}
+
+function renderOnscreenNumpad(session, isFeedback) {
+  const hasInput = Boolean(session.draftInput && session.draftInput.length > 0);
+  return `
+  <div class="onscreen-numpad" role="group" aria-label="Ziffernblock">
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="1">1</button>
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="2">2</button>
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="3">3</button>
+
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="4">4</button>
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="5">5</button>
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="6">6</button>
+
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="7">7</button>
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="8">8</button>
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="9">9</button>
+
+    <button type="button" class="btn-touch numpad-action-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-backspace" title="Löschen">⌫</button>
+    <button type="button" class="btn-touch numpad-digit-btn ${isFeedback ? 'disabled' : ''}" data-action="numpad-digit" data-value="0">0</button>
+    <button type="button" class="btn-touch numpad-submit-btn ${isFeedback || !hasInput ? 'disabled' : 'btn-ready'}" data-action="submit-card" title="Eingabe bestätigen">
+      OK ✓
+    </button>
+  </div>`;
 }
 
 function escapeHtml(str) {
